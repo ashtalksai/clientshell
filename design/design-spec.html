@@ -1,0 +1,1234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ClientShell — UI/UX Design Spec</title>
+<style>
+  :root {
+    --brand: #1E3A5F;
+    --brand-light: #E8EEF5;
+    --green: #16A34A;
+    --amber: #D97706;
+    --blue: #3B82F6;
+    --red: #DC2626;
+    --gray: #6B7280;
+    --border: #E5E7EB;
+    --bg: #F9FAFB;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Inter', sans-serif; font-size: 14px; color: #111827; line-height: 1.5; background: #fff; }
+  
+  /* Layout */
+  .page { max-width: 960px; margin: 0 auto; padding: 32px 24px; }
+  .section { margin-bottom: 56px; }
+  .section-title { font-size: 22px; font-weight: 700; color: var(--brand); margin-bottom: 4px; padding-bottom: 8px; border-bottom: 2px solid var(--brand); }
+  .section-sub { font-size: 13px; color: var(--gray); margin-bottom: 24px; }
+  
+  /* Cover */
+  .cover { background: var(--brand); color: white; padding: 48px 40px; border-radius: 12px; margin-bottom: 48px; }
+  .cover h1 { font-size: 32px; font-weight: 800; margin-bottom: 8px; }
+  .cover p { opacity: 0.8; font-size: 15px; }
+  .cover .meta { margin-top: 24px; display: flex; gap: 24px; font-size: 13px; opacity: 0.7; }
+  
+  /* Wireframes */
+  .wf-container { border: 1.5px solid var(--border); border-radius: 10px; overflow: hidden; margin-bottom: 32px; }
+  .wf-title-bar { background: var(--bg); padding: 12px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 8px; }
+  .wf-title-bar .dots { display: flex; gap: 5px; }
+  .wf-title-bar .dot { width: 10px; height: 10px; border-radius: 50%; }
+  .wf-title-bar .dot.r { background: #FCA5A5; }
+  .wf-title-bar .dot.y { background: #FCD34D; }
+  .wf-title-bar .dot.g { background: #6EE7B7; }
+  .wf-title-bar .url { font-family: monospace; font-size: 12px; color: var(--gray); background: white; border: 1px solid var(--border); border-radius: 4px; padding: 2px 10px; flex: 1; text-align: center; }
+  .wf-body { background: white; }
+  
+  /* Admin shell wireframe */
+  .admin-shell { display: flex; min-height: 400px; }
+  .sidebar { width: 220px; border-right: 1px solid var(--border); background: white; padding: 16px; flex-shrink: 0; }
+  .sidebar-logo { display: flex; align-items: center; gap: 8px; padding-bottom: 16px; border-bottom: 1px solid var(--border); margin-bottom: 12px; }
+  .logo-mark { width: 32px; height: 32px; background: var(--brand); border-radius: 7px; display: flex; align-items: center; justify-content: center; color: white; font-size: 14px; font-weight: 700; }
+  .logo-text { }
+  .logo-text .firm-name { font-weight: 600; font-size: 13px; }
+  .logo-text .subdomain { font-size: 11px; color: var(--gray); }
+  .nav-item { display: flex; align-items: center; gap: 8px; padding: 8px 10px; border-radius: 6px; margin-bottom: 2px; font-size: 13px; color: var(--gray); cursor: pointer; }
+  .nav-item.active { background: var(--brand-light); color: var(--brand); font-weight: 600; }
+  .nav-item .icon { width: 18px; height: 18px; border-radius: 3px; background: currentColor; opacity: 0.3; }
+  .nav-item.active .icon { opacity: 1; }
+  .sidebar-bottom { margin-top: auto; padding-top: 12px; border-top: 1px solid var(--border); }
+  .user-row { display: flex; align-items: center; gap: 8px; padding: 6px; border-radius: 6px; }
+  .avatar { width: 30px; height: 30px; border-radius: 50%; background: #E5E7EB; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; }
+  .main { flex: 1; padding: 24px; background: var(--bg); }
+  
+  /* Component blocks */
+  .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px; }
+  .stat-card { background: white; border: 1px solid var(--border); border-radius: 8px; padding: 14px; display: flex; align-items: center; gap: 12px; }
+  .stat-icon { width: 38px; height: 38px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+  .stat-val { font-size: 22px; font-weight: 700; }
+  .stat-label { font-size: 11px; color: var(--gray); }
+  
+  .two-col { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; }
+  .card { background: white; border: 1px solid var(--border); border-radius: 8px; padding: 16px; }
+  .card-title { font-weight: 600; font-size: 13px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; }
+  .card-title .link { font-size: 11px; font-weight: normal; color: var(--gray); }
+  
+  /* Activity row */
+  .activity-row { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--border); }
+  .activity-row:last-child { border-bottom: none; }
+  .activity-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .activity-text { flex: 1; font-size: 12px; }
+  .activity-time { font-size: 11px; color: var(--gray); }
+  
+  /* Badge */
+  .badge { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: 500; }
+  .badge.blue { background: #DBEAFE; color: #1D4ED8; }
+  .badge.green { background: #DCFCE7; color: #166534; }
+  .badge.amber { background: #FEF3C7; color: #92400E; }
+  .badge.gray { background: #F3F4F6; color: #374151; border: 1px solid var(--border); }
+  .badge.brand { background: var(--brand); color: white; }
+  
+  /* Portal shell */
+  .portal-header { background: white; border-bottom: 1px solid var(--border); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; }
+  .portal-logo { display: flex; align-items: center; gap: 10px; }
+  .portal-nav { display: flex; gap: 4px; }
+  .portal-nav-item { padding: 6px 14px; border-radius: 6px; font-size: 13px; color: var(--gray); }
+  .portal-nav-item.active { background: var(--brand-light); color: var(--brand); font-weight: 600; }
+  .portal-content { padding: 24px; background: var(--bg); min-height: 300px; }
+  
+  /* Onboarding wizard */
+  .wizard-header { background: white; border-bottom: 1px solid var(--border); padding: 16px 24px; display: flex; align-items: center; justify-content: space-between; }
+  .progress-bar { height: 4px; background: var(--brand-light); border-radius: 2px; margin-top: 8px; }
+  .progress-fill { height: 100%; background: var(--brand); border-radius: 2px; transition: width 0.3s; }
+  .wizard-body { max-width: 480px; margin: 0 auto; padding: 40px 24px; }
+  .wizard-step-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; color: var(--gray); margin-bottom: 8px; }
+  .wizard-heading { font-size: 26px; font-weight: 700; margin-bottom: 8px; }
+  .wizard-desc { font-size: 14px; color: var(--gray); margin-bottom: 32px; }
+  
+  /* Form */
+  .form-label { font-size: 12px; font-weight: 600; margin-bottom: 6px; display: block; color: #374151; }
+  .form-input { width: 100%; border: 1px solid var(--border); border-radius: 6px; padding: 9px 12px; font-size: 14px; }
+  .form-hint { font-size: 11px; color: var(--gray); margin-top: 4px; }
+  
+  /* Subdomain row */
+  .subdomain-row { display: flex; }
+  .subdomain-input { flex: 1; border: 1px solid var(--border); border-right: none; border-radius: 6px 0 0 6px; padding: 9px 12px; font-size: 14px; font-family: monospace; }
+  .subdomain-suffix { background: var(--bg); border: 1px solid var(--border); border-radius: 0 6px 6px 0; padding: 9px 12px; font-size: 13px; color: var(--gray); white-space: nowrap; }
+  
+  /* Template cards */
+  .template-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .template-card { border: 1.5px solid var(--border); border-radius: 8px; padding: 14px; cursor: pointer; display: flex; align-items: center; gap: 12px; }
+  .template-card.selected { border-color: var(--brand); background: var(--brand-light); }
+  .template-icon { width: 38px; height: 38px; border-radius: 8px; background: var(--brand-light); display: flex; align-items: center; justify-content: center; font-size: 18px; }
+  .template-card.selected .template-icon { background: var(--brand); }
+  
+  /* Color swatch row */
+  .swatch-row { display: flex; gap: 8px; }
+  .swatch { width: 32px; height: 32px; border-radius: 6px; cursor: pointer; position: relative; }
+  .swatch.selected::after { content: '✓'; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: white; font-size: 14px; }
+  .custom-swatch { width: 32px; height: 32px; border-radius: 6px; border: 1.5px dashed var(--border); display: flex; align-items: center; justify-content: center; font-size: 18px; cursor: pointer; }
+  
+  /* Doc card */
+  .doc-card { background: white; border: 1px solid var(--border); border-radius: 8px; padding: 14px; display: flex; align-items: center; gap: 12px; margin-bottom: 8px; }
+  .doc-icon { width: 36px; height: 36px; border-radius: 6px; background: #FEF2F2; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+  .doc-info { flex: 1; }
+  .doc-name { font-weight: 500; font-size: 13px; }
+  .doc-meta { font-size: 11px; color: var(--gray); margin-top: 2px; }
+  
+  /* Client card */
+  .client-row { display: flex; align-items: center; gap: 10px; padding: 10px; border-bottom: 1px solid var(--border); }
+  .client-row:last-child { border-bottom: none; }
+  .client-avatar { width: 36px; height: 36px; border-radius: 50%; background: #E5E7EB; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; }
+  .client-info { flex: 1; }
+  .client-name { font-weight: 500; font-size: 13px; }
+  .client-email { font-size: 11px; color: var(--gray); }
+  
+  /* Kanban */
+  .kanban { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .kanban-col { background: var(--bg); border-radius: 8px; padding: 12px; }
+  .kanban-col-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 10px; display: flex; align-items: center; gap: 6px; }
+  .kanban-dot { width: 8px; height: 8px; border-radius: 50%; }
+  .kanban-card { background: white; border: 1px solid var(--border); border-radius: 6px; padding: 10px; margin-bottom: 8px; }
+  .kanban-card-name { font-size: 12px; font-weight: 500; margin-bottom: 4px; }
+  .kanban-card-meta { font-size: 11px; color: var(--gray); }
+  
+  /* Spec table */
+  table { width: 100%; border-collapse: collapse; margin-bottom: 20px; }
+  th { text-align: left; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--gray); padding: 8px 12px; background: var(--bg); border: 1px solid var(--border); }
+  td { padding: 10px 12px; border: 1px solid var(--border); font-size: 13px; vertical-align: top; }
+  tr:nth-child(even) td { background: #FAFAFA; }
+  
+  /* Flow diagram */
+  .flow { display: flex; align-items: flex-start; gap: 0; flex-wrap: wrap; }
+  .flow-step { background: white; border: 1.5px solid var(--border); border-radius: 8px; padding: 12px 16px; min-width: 130px; text-align: center; }
+  .flow-step .label { font-size: 12px; font-weight: 600; margin-bottom: 2px; }
+  .flow-step .sub { font-size: 11px; color: var(--gray); }
+  .flow-step.trigger { border-color: var(--brand); background: var(--brand-light); }
+  .flow-step.decision { border-color: var(--amber); background: #FFFBEB; border-radius: 50%; width: 100px; height: 100px; display: flex; flex-direction: column; align-items: center; justify-content: center; min-width: 100px; }
+  .flow-arrow { display: flex; align-items: center; padding: 0 4px; font-size: 18px; color: var(--gray); }
+  .flow-label { font-size: 10px; color: var(--gray); position: absolute; top: -16px; left: 50%; transform: translateX(-50%); white-space: nowrap; }
+  .flow-group { display: flex; flex-direction: column; gap: 8px; }
+  
+  /* Improvement flag */
+  .flag { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; }
+  .flag.new { background: #DCFCE7; color: #166534; }
+  .flag.fix { background: #FEF3C7; color: #92400E; }
+  .flag.enhance { background: #EDE9FE; color: #5B21B6; }
+  
+  /* Color palette */
+  .palette { display: flex; gap: 12px; margin-bottom: 12px; }
+  .color-chip { text-align: center; }
+  .color-swatch { width: 60px; height: 60px; border-radius: 8px; margin-bottom: 6px; border: 1px solid rgba(0,0,0,0.1); }
+  .color-name { font-size: 11px; font-weight: 600; }
+  .color-hex { font-size: 10px; color: var(--gray); font-family: monospace; }
+  
+  /* Divider */
+  hr { border: none; border-top: 1px solid var(--border); margin: 32px 0; }
+  
+  /* Note box */
+  .note { background: #FFFBEB; border: 1px solid #FCD34D; border-radius: 6px; padding: 12px 16px; font-size: 13px; margin: 16px 0; }
+  .note strong { color: #92400E; }
+  
+  /* TOC */
+  .toc { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 20px 24px; margin-bottom: 40px; }
+  .toc h3 { font-size: 14px; font-weight: 700; margin-bottom: 12px; color: var(--brand); }
+  .toc ol { padding-left: 20px; }
+  .toc li { font-size: 13px; margin-bottom: 6px; }
+  .toc a { color: var(--brand); text-decoration: none; }
+  .toc a:hover { text-decoration: underline; }
+
+  .btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; border-radius: 6px; font-size: 13px; font-weight: 500; cursor: pointer; }
+  .btn.primary { background: var(--brand); color: white; border: none; }
+  .btn.outline { background: white; color: #374151; border: 1.5px solid var(--border); }
+  .btn.ghost { background: transparent; color: var(--gray); border: none; }
+  
+  .check { color: var(--green); }
+  .warn { color: var(--amber); }
+  .info { color: var(--blue); }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- Cover -->
+  <div class="cover">
+    <h1>🎨 ClientShell — UI/UX Design Spec</h1>
+    <p>White-label client portal for small professional services firms.</p>
+    <div class="meta">
+      <span>Stage 3: Design</span>
+      <span>·</span>
+      <span>Agent: @designer</span>
+      <span>·</span>
+      <span>2026-02-17</span>
+      <span>·</span>
+      <span>For: @coder handoff</span>
+    </div>
+  </div>
+
+  <!-- TOC -->
+  <div class="toc">
+    <h3>Contents</h3>
+    <ol>
+      <li><a href="#design-tokens">1. Design Tokens</a></li>
+      <li><a href="#ux-flow">2. UX Flow — End-to-End</a></li>
+      <li><a href="#landing">3. Landing Page</a></li>
+      <li><a href="#onboarding">4. Onboarding Wizard</a></li>
+      <li><a href="#admin">5. Admin Dashboard</a></li>
+      <li><a href="#clients">6. Clients Page</a></li>
+      <li><a href="#projects">7. Projects Kanban</a></li>
+      <li><a href="#documents">8. Documents Page</a></li>
+      <li><a href="#settings">9. Settings Page</a></li>
+      <li><a href="#portal">10. Client Portal</a></li>
+      <li><a href="#components">11. Shared Components</a></li>
+      <li><a href="#responsive">12. Responsive Rules</a></li>
+      <li><a href="#gaps">13. Missing Screens / Gaps</a></li>
+    </ol>
+  </div>
+
+  <!-- ===== 1. DESIGN TOKENS ===== -->
+  <div class="section" id="design-tokens">
+    <div class="section-title">1. Design Tokens</div>
+    <div class="section-sub">Use these consistently. Never hardcode brand color — always use CSS custom properties so white-label theming works.</div>
+
+    <h3 style="font-size:14px;font-weight:700;margin-bottom:12px;">Color Palette</h3>
+    <div class="palette">
+      <div class="color-chip">
+        <div class="color-swatch" style="background:#1E3A5F"></div>
+        <div class="color-name">Brand Primary</div>
+        <div class="color-hex">#1E3A5F</div>
+      </div>
+      <div class="color-chip">
+        <div class="color-swatch" style="background:#E8EEF5"></div>
+        <div class="color-name">Brand Light</div>
+        <div class="color-hex">#E8EEF5</div>
+      </div>
+      <div class="color-chip">
+        <div class="color-swatch" style="background:#F9FAFB"></div>
+        <div class="color-name">Surface</div>
+        <div class="color-hex">#F9FAFB</div>
+      </div>
+      <div class="color-chip">
+        <div class="color-swatch" style="background:#E5E7EB"></div>
+        <div class="color-name">Border</div>
+        <div class="color-hex">#E5E7EB</div>
+      </div>
+      <div class="color-chip">
+        <div class="color-swatch" style="background:#6B7280"></div>
+        <div class="color-name">Muted</div>
+        <div class="color-hex">#6B7280</div>
+      </div>
+      <div class="color-chip">
+        <div class="color-swatch" style="background:#16A34A"></div>
+        <div class="color-name">Success</div>
+        <div class="color-hex">#16A34A</div>
+      </div>
+      <div class="color-chip">
+        <div class="color-swatch" style="background:#D97706"></div>
+        <div class="color-name">Warning</div>
+        <div class="color-hex">#D97706</div>
+      </div>
+      <div class="color-chip">
+        <div class="color-swatch" style="background:#DC2626"></div>
+        <div class="color-name">Danger</div>
+        <div class="color-hex">#DC2626</div>
+      </div>
+    </div>
+
+    <table>
+      <tr><th>Token</th><th>CSS Variable</th><th>Default</th><th>Override?</th></tr>
+      <tr><td>Brand Primary</td><td><code>--brand-primary</code></td><td>#1E3A5F</td><td>✅ Per firm</td></tr>
+      <tr><td>Brand Light (10% tint)</td><td><code>--brand-light</code></td><td>#E8EEF5</td><td>✅ Computed</td></tr>
+      <tr><td>Brand Button Text</td><td><code>--brand-fg</code></td><td>#FFFFFF</td><td>✅ Auto (contrast check)</td></tr>
+      <tr><td>Surface</td><td>—</td><td>#F9FAFB</td><td>❌ Fixed</td></tr>
+      <tr><td>Border</td><td>—</td><td>#E5E7EB</td><td>❌ Fixed</td></tr>
+    </table>
+
+    <h3 style="font-size:14px;font-weight:700;margin-bottom:12px;margin-top:20px;">Typography</h3>
+    <table>
+      <tr><th>Usage</th><th>Size</th><th>Weight</th><th>Notes</th></tr>
+      <tr><td>Page heading (h1)</td><td>24px</td><td>700</td><td>Only one per page</td></tr>
+      <tr><td>Section heading (h2)</td><td>16px</td><td>600</td><td>Card titles, section headers</td></tr>
+      <tr><td>Body default</td><td>14px</td><td>400</td><td>Most text</td></tr>
+      <tr><td>Small / label</td><td>12px</td><td>500</td><td>Meta info, timestamps</td></tr>
+      <tr><td>Micro / badge</td><td>11px</td><td>600</td><td>Badges, tags</td></tr>
+      <tr><td>Font family</td><td colspan="3">Inter, -apple-system, system-ui (already in globals.css)</td></tr>
+    </table>
+
+    <h3 style="font-size:14px;font-weight:700;margin-bottom:12px;margin-top:20px;">Spacing Scale</h3>
+    <p style="font-size:13px;color:var(--gray)">Base 4px. Use multiples: 4, 8, 12, 16, 20, 24, 32, 40, 48, 64. Tailwind defaults already match this — use the scale, don't invent gaps.</p>
+
+    <h3 style="font-size:14px;font-weight:700;margin-bottom:12px;margin-top:20px;">Border Radius</h3>
+    <table>
+      <tr><th>Element</th><th>Radius</th></tr>
+      <tr><td>Cards, panels</td><td>8px (rounded-lg)</td></tr>
+      <tr><td>Buttons, inputs</td><td>6px (rounded-md)</td></tr>
+      <tr><td>Badges, pills</td><td>12px (rounded-full)</td></tr>
+      <tr><td>Avatars</td><td>50% (rounded-full)</td></tr>
+      <tr><td>Logo marks</td><td>8px (rounded-lg)</td></tr>
+    </table>
+  </div>
+
+  <!-- ===== 2. UX FLOW ===== -->
+  <div class="section" id="ux-flow">
+    <div class="section-title">2. UX Flow — End-to-End</div>
+    <div class="section-sub">Two primary actors: Firm Owner (admin) and Client (portal user).</div>
+
+    <h3 style="font-size:14px;font-weight:700;margin-bottom:16px;">Firm Owner Journey</h3>
+    <div style="overflow-x:auto;padding-bottom:8px;">
+      <div class="flow" style="gap:0;min-width:900px;">
+        <div class="flow-step trigger"><div class="label">Landing</div><div class="sub">/</div></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step"><div class="label">Sign Up</div><div class="sub">/signup</div></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step"><div class="label">Magic Link</div><div class="sub">email verify</div></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step trigger"><div class="label">Onboarding</div><div class="sub">4 steps</div></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step trigger"><div class="label">Dashboard</div><div class="sub">/dashboard</div></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step"><div class="label">Invite Client</div><div class="sub">modal</div></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step"><div class="label">Add Project</div><div class="sub">modal / page</div></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step"><div class="label">Upload Docs</div><div class="sub">/documents</div></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step trigger"><div class="label">Activity Feed</div><div class="sub">client views</div></div>
+      </div>
+    </div>
+
+    <h3 style="font-size:14px;font-weight:700;margin:24px 0 16px;">Client Journey</h3>
+    <div style="overflow-x:auto;padding-bottom:8px;">
+      <div class="flow" style="gap:0;min-width:700px;">
+        <div class="flow-step"><div class="label">Email Invite</div><div class="sub">magic link</div></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step trigger"><div class="label">Portal Home</div><div class="sub">/portal</div></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step"><div class="label">Projects</div><div class="sub">view status</div></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step"><div class="label">Documents</div><div class="sub">view / download</div></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step trigger"><div class="label">Messages</div><div class="sub">send note</div></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step"><div class="label">Admin sees</div><div class="sub">activity feed</div></div>
+      </div>
+    </div>
+
+    <h3 style="font-size:14px;font-weight:700;margin:24px 0 12px;">Onboarding Wizard — 4 Steps</h3>
+    <table>
+      <tr><th>Step</th><th>Screen Content</th><th>Validation</th><th>Exit Condition</th></tr>
+      <tr><td><span class="badge brand">1</span> Firm Name</td><td>Single text input, large, autofocus</td><td>Min 2 chars</td><td>Any valid name</td></tr>
+      <tr><td><span class="badge brand">2</span> Branding</td><td>Logo upload (optional) + color picker with preset swatches + live preview card</td><td>None required</td><td>Click Next</td></tr>
+      <tr><td><span class="badge brand">3</span> Portal URL</td><td>Subdomain field + .ashketing.com suffix + availability check</td><td>Min 3 chars, available</td><td>Green checkmark shown</td></tr>
+      <tr><td><span class="badge brand">4</span> Industry</td><td>5 template tiles with icon + label + "uses X" hint</td><td>One selected</td><td>"Launch Portal" CTA</td></tr>
+    </table>
+
+    <h3 style="font-size:14px;font-weight:700;margin:24px 0 12px;">Navigation Map</h3>
+    <table>
+      <tr><th>Route</th><th>Actor</th><th>Parent Layout</th><th>Auth</th></tr>
+      <tr><td>/</td><td>Public</td><td>None</td><td>No</td></tr>
+      <tr><td>/signup, /login</td><td>Public</td><td>Auth layout (centered)</td><td>No</td></tr>
+      <tr><td>/onboarding</td><td>Firm owner</td><td>Wizard layout (no sidebar)</td><td>Yes</td></tr>
+      <tr><td>/dashboard, /clients, /projects, /documents, /settings</td><td>Firm owner</td><td>Admin layout (sidebar)</td><td>Yes</td></tr>
+      <tr><td>/portal, /portal/*</td><td>Client</td><td>Portal shell (branded)</td><td>Magic link</td></tr>
+    </table>
+  </div>
+
+  <!-- ===== 3. LANDING PAGE ===== -->
+  <div class="section" id="landing">
+    <div class="section-title">3. Landing Page (/)</div>
+    <div class="section-sub">Public-facing. Goal: get them to "Start Free Trial". Existing implementation is solid — these are targeted improvements.</div>
+
+    <div class="note"><strong>⚠️ Existing issue:</strong> The browser mockup hero is good but the URL shows "portal.smithcpa.com" — this is correct for the demo. No change needed here. The trust badges row is effective — keep it.</div>
+
+    <h3 style="font-size:14px;font-weight:700;margin-bottom:12px;">Wireframe — Hero Section</h3>
+    <div class="wf-container">
+      <div class="wf-title-bar">
+        <div class="dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
+        <div class="url">clientshell.ashketing.com</div>
+      </div>
+      <div class="wf-body">
+        <!-- Nav -->
+        <div style="background:white;border-bottom:1px solid var(--border);padding:14px 32px;display:flex;align-items:center;justify-content:space-between;">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <div style="width:28px;height:28px;background:var(--brand);border-radius:6px;"></div>
+            <span style="font-weight:700;font-size:15px;">ClientShell</span>
+          </div>
+          <div style="display:flex;gap:24px;font-size:13px;color:var(--gray);">
+            <span>Features</span><span>Pricing</span><span>Login</span>
+          </div>
+          <div class="btn primary">Start Free Trial</div>
+        </div>
+        <!-- Hero -->
+        <div style="text-align:center;padding:64px 32px 40px;background:linear-gradient(to bottom,#F8FAFC,white);">
+          <div class="badge blue" style="margin-bottom:16px;">Setup in under 30 minutes</div>
+          <div style="font-size:36px;font-weight:800;line-height:1.15;margin-bottom:16px;">Your clients deserve a portal,<br>not a <span style="color:var(--gray);text-decoration:line-through">Google Drive link</span></div>
+          <div style="font-size:15px;color:var(--gray);max-width:480px;margin:0 auto 32px;">White-label client portal that makes your 10-person firm look like a 100-person operation.</div>
+          <div style="display:flex;gap:12px;justify-content:center;margin-bottom:48px;">
+            <div class="btn primary">Start Free Trial →</div>
+            <div class="btn outline">Watch Demo</div>
+          </div>
+          <!-- Browser mockup -->
+          <div style="border:1.5px solid var(--border);border-radius:10px;overflow:hidden;max-width:600px;margin:0 auto;box-shadow:0 8px 32px rgba(0,0,0,0.08);">
+            <div style="background:#F1F5F9;padding:10px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;">
+              <div style="display:flex;gap:4px;"><div style="width:9px;height:9px;border-radius:50%;background:#FCA5A5;"></div><div style="width:9px;height:9px;border-radius:50%;background:#FCD34D;"></div><div style="width:9px;height:9px;border-radius:50%;background:#6EE7B7;"></div></div>
+              <div style="flex:1;text-align:center;font-family:monospace;font-size:11px;background:white;border:1px solid var(--border);border-radius:4px;padding:2px 12px;color:var(--gray);">portal.smithcpa.com</div>
+            </div>
+            <div style="padding:20px;background:white;">
+              <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;">
+                <div style="width:32px;height:32px;background:var(--brand);border-radius:6px;"></div>
+                <span style="font-weight:600;">Smith &amp; Associates</span>
+              </div>
+              <div style="font-size:12px;color:var(--gray);margin-bottom:12px;">Welcome back, Sarah</div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+                <div style="border:1px solid var(--border);border-radius:6px;padding:10px;">
+                  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span style="font-size:12px;font-weight:500;">Q4 Tax Filing</span><span class="badge blue">In Progress</span></div>
+                  <div style="font-size:11px;color:var(--gray);">3 documents · 1 unread</div>
+                </div>
+                <div style="border:1px solid var(--border);border-radius:6px;padding:10px;">
+                  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;"><span style="font-size:12px;font-weight:500;">2024 Audit Prep</span><span class="badge gray">Not Started</span></div>
+                  <div style="font-size:11px;color:var(--gray);">1 document</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Trust -->
+        <div style="display:flex;justify-content:center;gap:32px;padding:24px;border-top:1px solid var(--border);font-size:12px;color:var(--gray);">
+          <span><span class="check">✓</span> Setup in &lt;30 min</span>
+          <span><span class="check">✓</span> Custom subdomain</span>
+          <span><span class="check">✓</span> Your logo + colors</span>
+          <span><span class="check">✓</span> No coding required</span>
+        </div>
+      </div>
+    </div>
+
+    <h3 style="font-size:14px;font-weight:700;margin-bottom:12px;">Design Improvements</h3>
+    <table>
+      <tr><th>Element</th><th>Current</th><th>Improvement</th><th>Type</th></tr>
+      <tr><td>Hero headline</td><td>"Look enterprise in under 30 minutes"</td><td>Add strikethrough "Google Drive link" visual in hero for pattern interrupt. Stronger emotional hook.</td><td><span class="flag enhance">Enhance</span></td></tr>
+      <tr><td>CTA button</td><td>Default shadcn Button</td><td>Add right arrow icon (already there). Add hover animation: slight Y-translate. Also add a subtle pulse on first render to draw eye.</td><td><span class="flag enhance">Enhance</span></td></tr>
+      <tr><td>Social proof</td><td>None</td><td>Add "Join 200+ firms" counter below CTAs (static text for MVP). Updates credibility.</td><td><span class="flag new">New</span></td></tr>
+      <tr><td>Nav mobile</td><td>Hidden md:flex (hides on mobile)</td><td>Add hamburger menu for mobile. Currently the nav is just hidden — login link is inaccessible on mobile.</td><td><span class="flag fix">Fix</span></td></tr>
+      <tr><td>Before/After</td><td>Not on landing page</td><td>Add a "Before / After" comparison block above pricing — shows Google Drive link vs branded portal side by side. This is the highest-converting asset the artist already made.</td><td><span class="flag new">New</span></td></tr>
+    </table>
+  </div>
+
+  <!-- ===== 4. ONBOARDING WIZARD ===== -->
+  <div class="section" id="onboarding">
+    <div class="section-title">4. Onboarding Wizard (/onboarding)</div>
+    <div class="section-sub">The most critical UX moment. Sets the whole tone. Goal: completion in under 5 minutes.</div>
+
+    <h3 style="font-size:14px;font-weight:700;margin-bottom:12px;">Wireframe — Step 2: Branding</h3>
+    <div class="wf-container">
+      <div class="wf-title-bar">
+        <div class="dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
+        <div class="url">clientshell.ashketing.com/onboarding</div>
+      </div>
+      <div class="wf-body">
+        <div class="wizard-header">
+          <div style="font-size:13px;color:var(--gray);">← Back</div>
+          <div style="font-weight:600;font-size:13px;">Setup Your Portal</div>
+          <div style="font-size:13px;color:var(--gray);">Step 2 of 4</div>
+        </div>
+        <!-- Progress bar (replace dots) -->
+        <div style="padding:0 24px;background:white;border-bottom:1px solid var(--border);">
+          <div class="progress-bar" style="margin-bottom:0;">
+            <div class="progress-fill" style="width:50%;"></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;padding:6px 0;font-size:11px;color:var(--gray);">
+            <span style="color:var(--brand);">✓ Firm Name</span>
+            <span style="color:var(--brand);font-weight:600;">Branding</span>
+            <span>Portal URL</span>
+            <span>Industry</span>
+          </div>
+        </div>
+
+        <div class="wizard-body">
+          <div class="wizard-step-label">Step 2</div>
+          <div class="wizard-heading">Make it yours</div>
+          <div class="wizard-desc">Upload your logo and pick your brand color. Clients will only ever see your branding.</div>
+
+          <div style="margin-bottom:20px;">
+            <div class="form-label">Logo (optional)</div>
+            <div style="border:2px dashed var(--border);border-radius:8px;padding:24px;text-align:center;cursor:pointer;">
+              <div style="font-size:24px;margin-bottom:6px;">📁</div>
+              <div style="font-size:13px;font-weight:500;">Drop file here or click to upload</div>
+              <div class="form-hint" style="margin-top:4px;">PNG, SVG up to 2MB</div>
+            </div>
+          </div>
+
+          <div style="margin-bottom:24px;">
+            <div class="form-label">Brand Color</div>
+            <div class="swatch-row" style="margin-bottom:8px;">
+              <div class="swatch selected" style="background:#1E3A5F;"></div>
+              <div class="swatch" style="background:#2563EB;"></div>
+              <div class="swatch" style="background:#7C3AED;"></div>
+              <div class="swatch" style="background:#DC2626;"></div>
+              <div class="swatch" style="background:#059669;"></div>
+              <div class="swatch" style="background:#D97706;"></div>
+              <div class="swatch" style="background:#374151;"></div>
+              <div class="custom-swatch">+</div>
+            </div>
+            <div class="form-hint">Selected: <code>#1E3A5F</code> — or enter custom hex</div>
+          </div>
+
+          <!-- Live preview -->
+          <div style="border:1.5px solid var(--brand);border-radius:8px;padding:16px;background:#F8FAFC;">
+            <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:var(--gray);margin-bottom:10px;">Preview — How clients see your portal</div>
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+              <div style="width:32px;height:32px;background:var(--brand);border-radius:6px;"></div>
+              <span style="font-weight:600;color:var(--brand);">Smith &amp; Associates</span>
+            </div>
+            <div style="font-size:12px;color:var(--gray);">Welcome back, Sarah</div>
+            <div class="btn primary" style="margin-top:10px;font-size:12px;padding:6px 12px;">View Your Portal →</div>
+          </div>
+        </div>
+
+        <div style="border-top:1px solid var(--border);padding:16px 24px;display:flex;justify-content:flex-end;">
+          <div class="btn primary">Next Step →</div>
+        </div>
+      </div>
+    </div>
+
+    <h3 style="font-size:14px;font-weight:700;margin-bottom:12px;">Design Improvements</h3>
+    <table>
+      <tr><th>Element</th><th>Current</th><th>Improvement</th><th>Type</th></tr>
+      <tr><td>Progress indicator</td><td>4 dots</td><td>Replace with progress bar + step labels below (Firm Name → Branding → Portal URL → Industry). Shows position + completion better. Use linear-gradient fill animation.</td><td><span class="flag enhance">Enhance</span></td></tr>
+      <tr><td>Color picker</td><td>ColorPicker component (unclear implementation)</td><td>Use preset swatches (7 brand-appropriate colors) + "custom hex" input. Much faster than a color wheel. 90% of users will pick from presets.</td><td><span class="flag enhance">Enhance</span></td></tr>
+      <tr><td>Logo uploader</td><td>Unclear (component not inspected)</td><td>Large dashed dropzone with PNG/SVG guidance. Show preview thumbnail after upload. "Remove" X button to clear.</td><td><span class="flag enhance">Enhance</span></td></tr>
+      <tr><td>Live preview</td><td>Shows basic name + color</td><td>Preview should show exactly what the portal header looks like — logo, firm name in brand color, one nav item for realism. Makes the "aha moment" land harder.</td><td><span class="flag enhance">Enhance</span></td></tr>
+      <tr><td>Step 3: Subdomain</td><td>Checking animation missing</td><td>Add a spinner during check, green checkmark on available, red X on taken. Also auto-suggest based on firm name (e.g. "smith-associates" from step 1).</td><td><span class="flag enhance">Enhance</span></td></tr>
+      <tr><td>Step 4: Template</td><td>Grid of cards</td><td>Keep as-is — it's clean. Only add: show a mini example of portal terminology on hover (e.g. hover "Legal" shows "Matters / Files / Appointments").</td><td><span class="flag enhance">Enhance</span></td></tr>
+      <tr><td>Success state</td><td>Redirects to /dashboard</td><td>Add a brief success screen before redirect: "🎉 Your portal is live at smithcpa.ashketing.com" with confetti / animated check. CTA: "Go to Dashboard" + "Share link with first client". 2 seconds of delight before redirect.</td><td><span class="flag new">New</span></td></tr>
+    </table>
+  </div>
+
+  <!-- ===== 5. ADMIN DASHBOARD ===== -->
+  <div class="section" id="admin">
+    <div class="section-title">5. Admin Dashboard (/dashboard)</div>
+    <div class="section-sub">Home base for the firm owner. Priority: activity feed is the hero, not the stats.</div>
+
+    <h3 style="font-size:14px;font-weight:700;margin-bottom:12px;">Wireframe</h3>
+    <div class="wf-container">
+      <div class="wf-title-bar">
+        <div class="dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
+        <div class="url">clientshell.ashketing.com/dashboard</div>
+      </div>
+      <div class="wf-body">
+        <div class="admin-shell">
+          <!-- Sidebar -->
+          <div class="sidebar" style="display:flex;flex-direction:column;">
+            <div class="sidebar-logo">
+              <div class="logo-mark">S</div>
+              <div class="logo-text">
+                <div class="firm-name">Smith &amp; Assoc.</div>
+                <div class="subdomain">smithcpa.ashketing.com ↗</div>
+              </div>
+            </div>
+            <nav>
+              <div class="nav-item active"><div class="icon"></div> Dashboard</div>
+              <div class="nav-item"><div class="icon"></div> Clients <span class="badge gray" style="margin-left:auto;font-size:10px;">8</span></div>
+              <div class="nav-item"><div class="icon"></div> Projects <span class="badge blue" style="margin-left:auto;font-size:10px;">3</span></div>
+              <div class="nav-item"><div class="icon"></div> Documents</div>
+              <div class="nav-item"><div class="icon"></div> Settings</div>
+            </nav>
+            <div class="sidebar-bottom" style="margin-top:auto;">
+              <div class="user-row">
+                <div class="avatar">J</div>
+                <div>
+                  <div style="font-size:12px;font-weight:500;">John Smith</div>
+                  <div style="font-size:11px;color:var(--gray);">john@smithcpa.com</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Main -->
+          <div class="main">
+            <!-- Header -->
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+              <div>
+                <div style="font-size:20px;font-weight:700;">Dashboard</div>
+                <div style="font-size:13px;color:var(--gray);">Monday, Feb 17 — 8 clients, 3 active projects</div>
+              </div>
+              <div style="display:flex;gap:8px;">
+                <div class="btn outline">+ New Project</div>
+                <div class="btn primary">+ Invite Client</div>
+              </div>
+            </div>
+
+            <!-- Stats -->
+            <div class="stat-grid">
+              <div class="stat-card">
+                <div class="stat-icon" style="background:#DBEAFE;">👥</div>
+                <div><div class="stat-val">8</div><div class="stat-label">Clients</div></div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-icon" style="background:#DCFCE7;">📁</div>
+                <div><div class="stat-val">3</div><div class="stat-label">Active Projects</div></div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-icon" style="background:#EDE9FE;">📄</div>
+                <div><div class="stat-val">12</div><div class="stat-label">Documents</div></div>
+              </div>
+              <div class="stat-card" style="border-color:var(--amber);">
+                <div class="stat-icon" style="background:#FEF3C7;">👁️</div>
+                <div>
+                  <div style="display:flex;align-items:center;gap:6px;"><div class="stat-val">2</div><span class="badge amber">New</span></div>
+                  <div class="stat-label">Docs Viewed</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Main 2-col -->
+            <div class="two-col">
+              <!-- Activity -->
+              <div class="card">
+                <div class="card-title">Recent Activity <span class="link">View all →</span></div>
+                <div class="activity-row">
+                  <div class="activity-dot" style="background:var(--amber);"></div>
+                  <div class="activity-text"><strong>Acme Corp</strong> viewed <em>Q4 Report.pdf</em></div>
+                  <div class="activity-time">2 min ago</div>
+                </div>
+                <div class="activity-row">
+                  <div class="activity-dot" style="background:var(--blue);"></div>
+                  <div class="activity-text"><strong>Johnson LLC</strong> downloaded <em>contract.pdf</em></div>
+                  <div class="activity-time">1h ago</div>
+                </div>
+                <div class="activity-row">
+                  <div class="activity-dot" style="background:var(--green);"></div>
+                  <div class="activity-text"><strong>Chen Co.</strong> sent a message on <em>Audit Prep</em></div>
+                  <div class="activity-time">3h ago</div>
+                </div>
+                <div class="activity-row">
+                  <div class="activity-dot" style="background:var(--gray);"></div>
+                  <div class="activity-text"><strong>Nguyen &amp; Partners</strong> logged in</div>
+                  <div class="activity-time">Yesterday</div>
+                </div>
+              </div>
+              <!-- Clients -->
+              <div class="card">
+                <div class="card-title">Clients <button class="btn ghost" style="padding:2px 6px;font-size:11px;">+ Invite</button></div>
+                <div class="client-row"><div class="client-avatar">A</div><div class="client-info"><div class="client-name">Acme Corp</div><div class="client-email">contact@acme.com</div></div><span class="badge green">Active</span></div>
+                <div class="client-row"><div class="client-avatar">J</div><div class="client-info"><div class="client-name">Johnson LLC</div><div class="client-email">info@johnson.com</div></div><span class="badge gray">Idle</span></div>
+                <div class="client-row"><div class="client-avatar">C</div><div class="client-info"><div class="client-name">Chen Co.</div><div class="client-email">chen@chen.co</div></div><span class="badge green">Active</span></div>
+                <div style="margin-top:10px;"><div class="btn outline" style="width:100%;justify-content:center;font-size:12px;">View All Clients</div></div>
+              </div>
+            </div>
+
+            <!-- Projects strip -->
+            <div class="card" style="margin-top:16px;">
+              <div class="card-title">Active Projects <span class="link">View all →</span></div>
+              <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;">
+                <div style="border:1px solid var(--border);border-radius:6px;padding:12px;">
+                  <div style="display:flex;justify-content:space-between;margin-bottom:6px;"><span style="font-size:13px;font-weight:500;">Q4 Tax Filing</span><span class="badge blue">In Progress</span></div>
+                  <div style="font-size:11px;color:var(--gray);">Acme Corp · 3 docs · 1 unread</div>
+                </div>
+                <div style="border:1px solid var(--border);border-radius:6px;padding:12px;">
+                  <div style="display:flex;justify-content:space-between;margin-bottom:6px;"><span style="font-size:13px;font-weight:500;">2024 Audit Prep</span><span class="badge gray">Not Started</span></div>
+                  <div style="font-size:11px;color:var(--gray);">Johnson LLC · 1 doc</div>
+                </div>
+                <div style="border:1px solid var(--border);border-radius:6px;padding:12px;">
+                  <div style="display:flex;justify-content:space-between;margin-bottom:6px;"><span style="font-size:13px;font-weight:500;">Business Restructuring</span><span class="badge amber">Review</span></div>
+                  <div style="font-size:11px;color:var(--gray);">Chen Co. · 5 docs · 2 unread</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h3 style="font-size:14px;font-weight:700;margin-bottom:12px;">Design Improvements</h3>
+    <table>
+      <tr><th>Element</th><th>Current</th><th>Improvement</th><th>Type</th></tr>
+      <tr><td>4th stat card layout bug</td><td>Badge is inside wrong flex context — renders next to "Unseen" label at the same level as stat number</td><td>Fix: wrap number+badge in one div, "Docs Viewed" label below. Verify all 4 cards are identical structure.</td><td><span class="flag fix">Fix</span></td></tr>
+      <tr><td>Sidebar nav badges</td><td>No count badges on nav items</td><td>Add count badges: Clients (total), Projects (active count in blue), Messages (unread in red dot). These motivate daily engagement.</td><td><span class="flag new">New</span></td></tr>
+      <tr><td>Sidebar subdomain link</td><td>Shows subdomain text, not clickable</td><td>Make it a clickable link with ↗ icon that opens client portal in new tab. This is very useful for the firm owner to preview.</td><td><span class="flag enhance">Enhance</span></td></tr>
+      <tr><td>Activity feed colors</td><td>All use same styling</td><td>Color-code event types: amber=view, blue=download, green=message, gray=login. Scannable in seconds.</td><td><span class="flag enhance">Enhance</span></td></tr>
+      <tr><td>Client status badge</td><td>Not present on clients in sidebar widget</td><td>Add "Active" (green) / "Idle" (gray) based on last 7-day login. Instant visibility into engagement.</td><td><span class="flag new">New</span></td></tr>
+      <tr><td>Empty state (new users)</td><td>Shows mock data, no empty state</td><td>When no clients exist: show "Invite your first client" empty state with button. Critical for new user activation.</td><td><span class="flag new">New</span></td></tr>
+      <tr><td>Notification bell (mobile)</td><td>Shows badge count but no panel</td><td>Bell click should open a slide-down notification panel listing recent activity. Same data as the activity feed. Required for mobile UX.</td><td><span class="flag fix">Fix</span></td></tr>
+    </table>
+  </div>
+
+  <!-- ===== 6. CLIENTS PAGE ===== -->
+  <div class="section" id="clients">
+    <div class="section-title">6. Clients Page (/clients)</div>
+    <div class="section-sub">List of all clients with search. Entry point to invite flow.</div>
+
+    <h3 style="font-size:14px;font-weight:700;margin-bottom:12px;">Wireframe</h3>
+    <div class="wf-container">
+      <div class="wf-title-bar">
+        <div class="dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
+        <div class="url">clientshell.ashketing.com/clients</div>
+      </div>
+      <div class="wf-body">
+        <div class="admin-shell">
+          <div class="sidebar" style="display:flex;flex-direction:column;">
+            <div class="nav-item"><div class="icon"></div> Dashboard</div>
+            <div class="nav-item active"><div class="icon"></div> Clients <span class="badge gray" style="margin-left:auto;font-size:10px;">8</span></div>
+            <div class="nav-item"><div class="icon"></div> Projects</div>
+            <div class="nav-item"><div class="icon"></div> Documents</div>
+            <div class="nav-item"><div class="icon"></div> Settings</div>
+          </div>
+          <div class="main">
+            <!-- Header -->
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+              <div style="font-size:20px;font-weight:700;">Clients</div>
+              <div class="btn primary">+ Invite Client</div>
+            </div>
+            <!-- Search + filter row -->
+            <div style="display:flex;gap:8px;margin-bottom:16px;">
+              <input class="form-input" style="flex:1;max-width:320px;" placeholder="Search clients..." />
+              <div class="btn outline">All Status ▾</div>
+            </div>
+            <!-- Table -->
+            <div class="card" style="padding:0;overflow:hidden;">
+              <table style="margin:0;">
+                <tr>
+                  <th style="padding:12px 16px;">Client</th>
+                  <th>Projects</th>
+                  <th>Documents</th>
+                  <th>Last Active</th>
+                  <th>Status</th>
+                  <th></th>
+                </tr>
+                <tr>
+                  <td style="padding:12px 16px;"><div style="display:flex;align-items:center;gap:10px;"><div class="avatar">A</div><div><div style="font-weight:500;font-size:13px;">Acme Corp</div><div style="font-size:11px;color:var(--gray);">sarah@acme.com</div></div></div></td>
+                  <td>2</td>
+                  <td>8</td>
+                  <td style="font-size:12px;color:var(--gray);">2 min ago</td>
+                  <td><span class="badge green">Active</span></td>
+                  <td><div class="btn ghost" style="font-size:12px;">View →</div></td>
+                </tr>
+                <tr>
+                  <td style="padding:12px 16px;"><div style="display:flex;align-items:center;gap:10px;"><div class="avatar">J</div><div><div style="font-weight:500;font-size:13px;">Johnson LLC</div><div style="font-size:11px;color:var(--gray);">info@johnson.com</div></div></div></td>
+                  <td>1</td>
+                  <td>3</td>
+                  <td style="font-size:12px;color:var(--gray);">3 days ago</td>
+                  <td><span class="badge gray">Idle</span></td>
+                  <td><div class="btn ghost" style="font-size:12px;">View →</div></td>
+                </tr>
+                <tr>
+                  <td style="padding:12px 16px;"><div style="display:flex;align-items:center;gap:10px;"><div class="avatar" style="background:#FEE2E2;">!</div><div><div style="font-weight:500;font-size:13px;">Nguyen &amp; Partners</div><div style="font-size:11px;color:var(--gray);">n@nguyen.com</div></div></div></td>
+                  <td>1</td>
+                  <td>1</td>
+                  <td style="font-size:12px;color:var(--red);">Invited — not joined</td>
+                  <td><span class="badge" style="background:#FEE2E2;color:var(--red);">Pending</span></td>
+                  <td><div class="btn ghost" style="font-size:12px;">Resend →</div></td>
+                </tr>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h3 style="font-size:14px;font-weight:700;margin-bottom:12px;">Component: Invite Client Modal</h3>
+    <table>
+      <tr><th>Field</th><th>Type</th><th>Validation</th><th>Notes</th></tr>
+      <tr><td>Client name</td><td>Text input</td><td>Required, min 2 chars</td><td>Placeholder: "Acme Corp"</td></tr>
+      <tr><td>Email</td><td>Email input</td><td>Required, valid email</td><td>Sends magic link here</td></tr>
+      <tr><td>Assign projects</td><td>Multi-select checkboxes</td><td>Optional</td><td>Shows project names. Can be added later.</td></tr>
+      <tr><td>Personal note</td><td>Textarea (optional)</td><td>Max 200 chars</td><td>Appended to invite email</td></tr>
+      <tr><td>CTA</td><td>Button</td><td>Submit</td><td>"Send Invite" — shows loading → "Invite Sent! ✓"</td></tr>
+    </table>
+
+    <h3 style="font-size:14px;font-weight:700;margin-bottom:12px;">Design Improvements</h3>
+    <table>
+      <tr><th>Element</th><th>Improvement</th><th>Type</th></tr>
+      <tr><td>Client list</td><td>Table view (not list of cards) — much more scannable for 8+ clients. Show columns: Client, Projects, Documents, Last Active, Status, Actions.</td><td><span class="flag enhance">Enhance</span></td></tr>
+      <tr><td>Pending state</td><td>Add "Pending" status for invited-but-not-joined clients. Show "Resend invite" instead of "View" CTA. Red avatar with ! indicator.</td><td><span class="flag new">New</span></td></tr>
+      <tr><td>Client detail page /clients/[id]</td><td>Missing entirely (caused 404s in testing). Needs: client header, their projects list, their documents, activity log for this client, message thread. This is a high-value screen — the firm owner checks this before a call.</td><td><span class="flag new">New</span></td></tr>
+      <tr><td>Empty state</td><td>Full-page empty state with large CTA and illustration when no clients. "Your first client is one invite away."</td><td><span class="flag new">New</span></td></tr>
+    </table>
+  </div>
+
+  <!-- ===== 7. PROJECTS ===== -->
+  <div class="section" id="projects">
+    <div class="section-title">7. Projects Page (/projects)</div>
+    <div class="section-sub">Kanban view of all projects. Key improvement: add the ability to create new projects inline.</div>
+
+    <h3 style="font-size:14px;font-weight:700;margin-bottom:12px;">Wireframe — Kanban View</h3>
+    <div class="wf-container">
+      <div class="wf-title-bar">
+        <div class="dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
+        <div class="url">clientshell.ashketing.com/projects</div>
+      </div>
+      <div class="wf-body" style="padding:20px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+          <div style="font-size:18px;font-weight:700;">Projects</div>
+          <div style="display:flex;gap:8px;">
+            <div class="btn outline" style="font-size:12px;">List ▾</div>
+            <div class="btn outline" style="font-size:12px;">Filter by client</div>
+            <div class="btn primary">+ New Project</div>
+          </div>
+        </div>
+        <div class="kanban">
+          <div class="kanban-col">
+            <div class="kanban-col-title"><div class="kanban-dot" style="background:var(--gray);"></div> Not Started <span style="margin-left:auto;font-size:10px;background:#F3F4F6;padding:1px 6px;border-radius:8px;">2</span></div>
+            <div class="kanban-card">
+              <div class="kanban-card-name">2024 Audit Prep</div>
+              <div class="kanban-card-meta">Johnson LLC · 1 doc</div>
+            </div>
+            <div class="kanban-card">
+              <div class="kanban-card-name">Estate Planning Review</div>
+              <div class="kanban-card-meta">Chen Co. · 0 docs</div>
+            </div>
+            <div style="border:1.5px dashed var(--border);border-radius:6px;padding:8px;text-align:center;font-size:12px;color:var(--gray);cursor:pointer;margin-top:4px;">+ Add</div>
+          </div>
+          <div class="kanban-col">
+            <div class="kanban-col-title"><div class="kanban-dot" style="background:var(--blue);"></div> In Progress <span style="margin-left:auto;font-size:10px;background:#DBEAFE;padding:1px 6px;border-radius:8px;color:#1D4ED8;">3</span></div>
+            <div class="kanban-card" style="border-left:3px solid var(--blue);">
+              <div class="kanban-card-name">Q4 Tax Filing</div>
+              <div class="kanban-card-meta">Acme Corp · 3 docs · <span style="color:var(--blue);">1 unread</span></div>
+            </div>
+          </div>
+          <div class="kanban-col">
+            <div class="kanban-col-title"><div class="kanban-dot" style="background:var(--amber);"></div> Review <span style="margin-left:auto;font-size:10px;background:#FEF3C7;padding:1px 6px;border-radius:8px;color:#92400E;">1</span></div>
+            <div class="kanban-card" style="border-left:3px solid var(--amber);">
+              <div class="kanban-card-name">Business Restructuring</div>
+              <div class="kanban-card-meta">Chen Co. · 5 docs · <span style="color:var(--red);">2 unread</span></div>
+            </div>
+          </div>
+          <div class="kanban-col">
+            <div class="kanban-col-title"><div class="kanban-dot" style="background:var(--green);"></div> Complete <span style="margin-left:auto;font-size:10px;background:#DCFCE7;padding:1px 6px;border-radius:8px;color:#166534;">1</span></div>
+            <div class="kanban-card" style="opacity:0.6;">
+              <div class="kanban-card-name">Onboarding 2024</div>
+              <div class="kanban-card-meta">Nguyen &amp; Partners · 2 docs</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h3 style="font-size:14px;font-weight:700;margin-bottom:12px;">Design Improvements</h3>
+    <table>
+      <tr><th>Element</th><th>Improvement</th><th>Type</th></tr>
+      <tr><td>Left border accent</td><td>Add left border color to kanban cards matching status (blue=in_progress, amber=review, green=complete). More visual structure, less reliance on badge text alone.</td><td><span class="flag enhance">Enhance</span></td></tr>
+      <tr><td>Unread count</td><td>Show "X unread" in red on cards with unread messages. Direct attention to what needs action.</td><td><span class="flag enhance">Enhance</span></td></tr>
+      <tr><td>Column count badges</td><td>Show count per column in color-matched pill. Instant status overview.</td><td><span class="flag new">New</span></td></tr>
+      <tr><td>Add card inline</td><td>Dashed "+ Add" card at bottom of each column. Clicking opens a simple name input inline (don't navigate away). Most kanban tools do this.</td><td><span class="flag new">New</span></td></tr>
+      <tr><td>Drag-to-update</td><td>Allow drag between columns to update status. This is a delight feature — not required for MVP, mark as v1.1.</td><td><span class="flag enhance">Enhance</span></td></tr>
+      <tr><td>View toggle</td><td>Add List/Kanban toggle button. List view is better when there are 10+ projects.</td><td><span class="flag new">New</span></td></tr>
+    </table>
+  </div>
+
+  <!-- ===== 8. DOCUMENTS ===== -->
+  <div class="section" id="documents">
+    <div class="section-title">8. Documents Page (/documents)</div>
+    <div class="section-sub">Admin view of all documents. Upload, share, track opens.</div>
+
+    <h3 style="font-size:14px;font-weight:700;margin-bottom:12px;">Wireframe</h3>
+    <div class="wf-container">
+      <div class="wf-title-bar">
+        <div class="dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
+        <div class="url">clientshell.ashketing.com/documents</div>
+      </div>
+      <div class="wf-body" style="padding:20px;">
+        <!-- Stats row -->
+        <div style="display:flex;gap:16px;margin-bottom:20px;">
+          <div style="background:white;border:1px solid var(--border);border-radius:8px;padding:12px 16px;flex:1;">
+            <div style="font-size:22px;font-weight:700;">12</div>
+            <div style="font-size:12px;color:var(--gray);">Total Documents</div>
+          </div>
+          <div style="background:white;border:1px solid var(--border);border-radius:8px;padding:12px 16px;flex:1;">
+            <div style="font-size:22px;font-weight:700;color:var(--amber);">2</div>
+            <div style="font-size:12px;color:var(--gray);">Viewed Today</div>
+          </div>
+          <div style="background:white;border:1px solid var(--border);border-radius:8px;padding:12px 16px;flex:1;">
+            <div style="font-size:22px;font-weight:700;">3</div>
+            <div style="font-size:12px;color:var(--gray);">Downloads This Week</div>
+          </div>
+        </div>
+        <!-- Upload + search -->
+        <div style="display:flex;justify-content:space-between;margin-bottom:16px;">
+          <input class="form-input" style="max-width:280px;" placeholder="Search documents..." />
+          <div class="btn primary">↑ Upload Document</div>
+        </div>
+        <!-- File list -->
+        <div class="doc-card">
+          <div class="doc-icon">📄</div>
+          <div class="doc-info">
+            <div class="doc-name">Q4 Engagement Letter.pdf</div>
+            <div class="doc-meta">Uploaded Feb 15 · Acme Corp · Q4 Tax Filing · <span style="color:var(--amber);">Viewed 3x</span></div>
+          </div>
+          <span class="badge gray">No expiry</span>
+          <div class="btn ghost" style="font-size:12px;">•••</div>
+        </div>
+        <div class="doc-card">
+          <div class="doc-icon">📄</div>
+          <div class="doc-info">
+            <div class="doc-name">Tax Checklist 2024.pdf</div>
+            <div class="doc-meta">Uploaded Feb 8 · Johnson LLC · <span style="color:var(--red);">Expires Mar 1</span></div>
+          </div>
+          <span class="badge" style="background:#FEE2E2;color:var(--red);">Expires in 12 days</span>
+          <div class="btn ghost" style="font-size:12px;">•••</div>
+        </div>
+        <div class="doc-card">
+          <div class="doc-icon">📊</div>
+          <div class="doc-info">
+            <div class="doc-name">2024 Financial Summary.xlsx</div>
+            <div class="doc-meta">Uploaded Feb 1 · Chen Co. · Not yet viewed</div>
+          </div>
+          <span class="badge gray">No expiry</span>
+          <div class="btn ghost" style="font-size:12px;">•••</div>
+        </div>
+      </div>
+    </div>
+
+    <h3 style="font-size:14px;font-weight:700;margin-bottom:12px;">Design Improvements</h3>
+    <table>
+      <tr><th>Element</th><th>Improvement</th><th>Type</th></tr>
+      <tr><td>View count on doc rows</td><td>Show "Viewed 3x" in amber when viewed, "Not yet viewed" in gray when not. This is the key engagement signal for the firm owner.</td><td><span class="flag enhance">Enhance</span></td></tr>
+      <tr><td>Expiry badge</td><td>Color-coded: red if expiring within 7 days, amber if within 30 days, gray if no expiry. Currently just shows a badge — needs urgency coloring.</td><td><span class="flag enhance">Enhance</span></td></tr>
+      <tr><td>Upload modal</td><td>Show a drag-drop modal with: file picker, client assignment dropdown, project dropdown, expiry date picker (optional), description field. Consistent with portal UX.</td><td><span class="flag new">New</span></td></tr>
+      <tr><td>Three-dot menu</td><td>Context menu with: Download, Share link, Set expiry, Move to project, Delete. Currently no actions visible.</td><td><span class="flag new">New</span></td></tr>
+      <tr><td>Filter by client</td><td>Add filter dropdown to show only docs for a specific client or project.</td><td><span class="flag new">New</span></td></tr>
+    </table>
+  </div>
+
+  <!-- ===== 9. SETTINGS ===== -->
+  <div class="section" id="settings">
+    <div class="section-title">9. Settings Page (/settings)</div>
+    <div class="section-sub">Clean form. Max width 640px. Most important: the branding section should show a live preview.</div>
+
+    <h3 style="font-size:14px;font-weight:700;margin-bottom:12px;">Design Improvements</h3>
+    <table>
+      <tr><th>Section</th><th>Improvement</th><th>Type</th></tr>
+      <tr><td>Branding preview</td><td>Add a live portal header preview that updates as you change logo/color. Same component as the onboarding wizard preview — reuse it. Shows firm owner exactly what clients will see.</td><td><span class="flag enhance">Enhance</span></td></tr>
+      <tr><td>Save button</td><td>Currently at the bottom — far from the fields. Use per-section Save buttons OR a sticky "Unsaved changes — Save now" toast/banner that appears on change. Never lose edits.</td><td><span class="flag fix">Fix</span></td></tr>
+      <tr><td>Portal URL section</td><td>Currently just an input. Add: "Your portal is live at smithcpa.ashketing.com" with a "Visit Portal →" link. Also add DNS custom domain instructions for Pro plan (collapsible).</td><td><span class="flag enhance">Enhance</span></td></tr>
+      <tr><td>Plan upgrade CTA</td><td>Billing section shows plan but the Upgrade button is minimal. Add a feature comparison snippet (e.g., "Upgrade to Pro: unlimited clients, custom domain, activity tracking").</td><td><span class="flag enhance">Enhance</span></td></tr>
+      <tr><td>Danger zone</td><td>Sign Out button is next to Save — bad UX. Move to a "Danger Zone" section at the bottom with Delete Account option (prominent red section, separate from save actions).</td><td><span class="flag fix">Fix</span></td></tr>
+    </table>
+  </div>
+
+  <!-- ===== 10. CLIENT PORTAL ===== -->
+  <div class="section" id="portal">
+    <div class="section-title">10. Client Portal (/portal)</div>
+    <div class="section-sub">The client-facing product. Must feel branded and professional. The "wow" moment for the firm's client.</div>
+
+    <h3 style="font-size:14px;font-weight:700;margin-bottom:12px;">Wireframe — Portal Home</h3>
+    <div class="wf-container">
+      <div class="wf-title-bar">
+        <div class="dots"><div class="dot r"></div><div class="dot y"></div><div class="dot g"></div></div>
+        <div class="url">portal.smithcpa.com</div>
+      </div>
+      <div class="wf-body">
+        <!-- Branded header -->
+        <div class="portal-header" style="border-top:3px solid var(--brand);">
+          <div class="portal-logo">
+            <div style="width:28px;height:28px;background:var(--brand);border-radius:6px;"></div>
+            <span style="font-weight:700;color:var(--brand);">Smith &amp; Associates</span>
+          </div>
+          <div class="portal-nav">
+            <div class="portal-nav-item active">Home</div>
+            <div class="portal-nav-item">Documents</div>
+            <div class="portal-nav-item">Projects</div>
+            <div class="portal-nav-item">Messages</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <div class="avatar" style="width:28px;height:28px;font-size:12px;">S</div>
+            <span style="font-size:13px;font-weight:500;">Sarah</span>
+          </div>
+        </div>
+
+        <!-- Content -->
+        <div class="portal-content">
+          <!-- Welcome banner -->
+          <div style="background:var(--brand);color:white;border-radius:10px;padding:20px 24px;margin-bottom:20px;">
+            <div style="font-size:18px;font-weight:700;margin-bottom:4px;">Welcome back, Sarah 👋</div>
+            <div style="font-size:13px;opacity:0.8;">You have 1 unread document and 1 new message from Smith &amp; Associates.</div>
+          </div>
+
+          <!-- Quick stats -->
+          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px;">
+            <div style="background:white;border:1px solid var(--border);border-radius:8px;padding:14px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;">2</div>
+              <div style="font-size:12px;color:var(--gray);">Active Projects</div>
+            </div>
+            <div style="background:white;border:1px solid var(--border);border-radius:8px;padding:14px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;color:var(--amber);">1</div>
+              <div style="font-size:12px;color:var(--gray);">Unread Doc</div>
+            </div>
+            <div style="background:white;border:1px solid var(--border);border-radius:8px;padding:14px;text-align:center;">
+              <div style="font-size:22px;font-weight:700;color:var(--green);">1</div>
+              <div style="font-size:12px;color:var(--gray);">New Message</div>
+            </div>
+          </div>
+
+          <!-- Projects -->
+          <div style="margin-bottom:20px;">
+            <div style="display:flex;justify-content:space-between;margin-bottom:10px;font-weight:600;font-size:14px;"><span>Your Projects</span><span style="font-size:12px;font-weight:normal;color:var(--gray);">View all →</span></div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+              <div style="background:white;border:1px solid var(--border);border-left:3px solid var(--blue);border-radius:8px;padding:12px;">
+                <div style="font-weight:500;font-size:13px;margin-bottom:4px;">Q4 Tax Filing</div>
+                <div style="display:flex;align-items:center;gap:6px;"><span class="badge blue">In Progress</span><span style="font-size:11px;color:var(--gray);">3 docs</span></div>
+              </div>
+              <div style="background:white;border:1px solid var(--border);border-left:3px solid var(--gray);border-radius:8px;padding:12px;">
+                <div style="font-weight:500;font-size:13px;margin-bottom:4px;">2024 Audit Prep</div>
+                <div style="display:flex;align-items:center;gap:6px;"><span class="badge gray">Not Started</span><span style="font-size:11px;color:var(--gray);">1 doc</span></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Recent docs -->
+          <div>
+            <div style="display:flex;justify-content:space-between;margin-bottom:10px;font-weight:600;font-size:14px;"><span>Recent Documents</span><span style="font-size:12px;font-weight:normal;color:var(--gray);">View all →</span></div>
+            <div class="doc-card">
+              <div class="doc-icon">📄</div>
+              <div class="doc-info">
+                <div class="doc-name">Q4 Engagement Letter.pdf</div>
+                <div class="doc-meta">Added Feb 15 · <span style="color:var(--red);">Expires Mar 1</span></div>
+              </div>
+              <span class="badge" style="background:#FEE2E2;color:var(--red);">Unread</span>
+              <div class="btn primary" style="font-size:12px;padding:6px 12px;">Download</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mobile bottom nav (portal only) -->
+        <div style="display:none;background:white;border-top:1px solid var(--border);padding:10px 0;display:flex;justify-content:space-around;position:sticky;bottom:0;">
+          <div style="text-align:center;font-size:11px;color:var(--brand);"><div>🏠</div>Home</div>
+          <div style="text-align:center;font-size:11px;color:var(--gray);"><div>📄</div>Docs</div>
+          <div style="text-align:center;font-size:11px;color:var(--gray);"><div>📁</div>Projects</div>
+          <div style="text-align:center;font-size:11px;color:var(--gray);"><div>💬</div>Messages</div>
+        </div>
+      </div>
+    </div>
+
+    <h3 style="font-size:14px;font-weight:700;margin-bottom:12px;">Design Improvements</h3>
+    <table>
+      <tr><th>Element</th><th>Improvement</th><th>Type</th></tr>
+      <tr><td>Branded header accent</td><td>Add a 3px top border in the firm's brand color on the portal header. This is a strong visual signal that this portal belongs to this firm. Cost: 1 line of CSS.</td><td><span class="flag enhance">Enhance</span></td></tr>
+      <tr><td>Welcome banner</td><td>Replace plain "Welcome back" text with a branded banner card in the firm's primary color. Shows unread count, new messages. Makes the landing state feel premium and personalized.</td><td><span class="flag new">New</span></td></tr>
+      <tr><td>Quick stats row</td><td>Show client-relevant stats: Active Projects, Unread Docs, New Messages. Three small stat cards. Different from the admin stats — these are the client's numbers.</td><td><span class="flag new">New</span></td></tr>
+      <tr><td>Unread badge on doc</td><td>Show "Unread" badge in red on documents the client hasn't opened. Drives engagement. Disappears once they view it (triggers activity event to admin).</td><td><span class="flag new">New</span></td></tr>
+      <tr><td>Portal mobile nav</td><td>Replace hamburger sheet with fixed bottom tab bar on mobile (Home, Docs, Projects, Messages). Much lower friction for clients on mobile. Portal is client-facing — they don't live in it, they visit it. Bottom tabs = instant orientation.</td><td><span class="flag new">New</span></td></tr>
+      <tr><td>CSS variables usage</td><td>Button colors in the portal must use <code>var(--brand-primary)</code> not hardcoded #1E3A5F. Check all portal components for any hardcoded blue values.</td><td><span class="flag fix">Fix</span></td></tr>
+      <tr><td>Portal login page</td><td>When a client first clicks their magic link, show a branded "Welcome to [Firm Name]" screen in the firm's colors with their logo. Not a generic ClientShell screen. This is the first impression.</td><td><span class="flag new">New</span></td></tr>
+    </table>
+  </div>
+
+  <!-- ===== 11. SHARED COMPONENTS ===== -->
+  <div class="section" id="components">
+    <div class="section-title">11. Shared Components</div>
+    <div class="section-sub">Reusable building blocks with exact specs for the coder.</div>
+
+    <table>
+      <tr><th>Component</th><th>Location</th><th>Props</th><th>Behavior / Notes</th></tr>
+      <tr>
+        <td><strong>ActivityFeed</strong></td>
+        <td>src/components/admin/activity-feed.tsx</td>
+        <td>events[], limit?</td>
+        <td>Color-code dots by type: view=amber, download=blue, message=green, login=gray. Show relative time ("2 min ago"). Truncate at limit with "View all" link.</td>
+      </tr>
+      <tr>
+        <td><strong>ProjectCard</strong></td>
+        <td>src/components/admin/project-card.tsx</td>
+        <td>project{}, isClientView?, onClick</td>
+        <td>Admin: shows client name + unread badge. Client: shows status + doc count. Add left border accent matching status color. Clickable entire card.</td>
+      </tr>
+      <tr>
+        <td><strong>DocumentCard</strong></td>
+        <td>src/components/admin/document-card.tsx</td>
+        <td>doc{}, onDownload, isClientView?</td>
+        <td>Show file type icon (PDF=red, XLS=green, DOC=blue). Show view count (admin) or "Unread" badge (client). Expiry warning if &lt;7 days. Three-dot menu (admin) or Download button (client).</td>
+      </tr>
+      <tr>
+        <td><strong>BrandingWizard</strong></td>
+        <td>src/components/admin/branding-wizard.tsx</td>
+        <td>onComplete, initialData?</td>
+        <td>Replace dot progress with labeled progress bar. Preset color swatches. Auto-suggest subdomain. Add success screen before redirect.</td>
+      </tr>
+      <tr>
+        <td><strong>InviteClientModal</strong></td>
+        <td>src/components/admin/invite-modal.tsx</td>
+        <td>isOpen, onClose, onInvite, projects[]</td>
+        <td>4 fields: name, email, project checkboxes, optional note. Submit shows loading state → success state. Email validation inline.</td>
+      </tr>
+      <tr>
+        <td><strong>ClientPortalShell</strong></td>
+        <td>src/components/portal/client-shell.tsx</td>
+        <td>firm{}, client{}, children</td>
+        <td>Add 3px top border in brand color. Mobile: replace hamburger with bottom tab bar (4 tabs). Inject brand CSS variables on root element.</td>
+      </tr>
+      <tr>
+        <td><strong>ColorPicker</strong></td>
+        <td>src/components/shared/color-picker.tsx</td>
+        <td>value, onChange</td>
+        <td>Replace with: 7 preset swatches (navy, blue, purple, red, green, amber, dark gray) + hex input. Much faster UX than a color wheel. Auto-compute --brand-light (10% opacity) from selection.</td>
+      </tr>
+      <tr>
+        <td><strong>LogoUploader</strong></td>
+        <td>src/components/shared/logo-uploader.tsx</td>
+        <td>value, onChange</td>
+        <td>Dashed dropzone. After upload: show preview + "Remove" X. Accept PNG, SVG, JPG. Max 2MB. Show error if oversized.</td>
+      </tr>
+      <tr>
+        <td><strong>EmptyState</strong> (NEW)</td>
+        <td>src/components/shared/empty-state.tsx</td>
+        <td>icon, title, description, cta{label, onClick}</td>
+        <td>Used on Clients, Projects, Documents pages when empty. Large centered layout. Icon (Lucide), h2 title, p description, primary CTA button. Important for new user activation.</td>
+      </tr>
+      <tr>
+        <td><strong>StatusBadge</strong> (NEW)</td>
+        <td>src/components/shared/status-badge.tsx</td>
+        <td>status: ProjectStatus</td>
+        <td>Maps status → color. not_started=gray, in_progress=blue, review=amber, complete=green. Badge component from shadcn with className mapping.</td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- ===== 12. RESPONSIVE RULES ===== -->
+  <div class="section" id="responsive">
+    <div class="section-title">12. Responsive Rules</div>
+    <div class="section-sub">Mobile-first. The portal is used on mobile. The admin dashboard is mostly desktop.</div>
+
+    <table>
+      <tr><th>Breakpoint</th><th>Admin Dashboard</th><th>Client Portal</th></tr>
+      <tr><td>Mobile (&lt;768px)</td><td>Sidebar collapses to top header with hamburger. Stats: 2-col grid. Main content: single column. Table views become card stacks.</td><td>Top header + bottom tab nav (4 tabs). Single column content. Cards stack vertically. Download buttons full-width.</td></tr>
+      <tr><td>Tablet (768-1024px)</td><td>Sidebar stays visible (narrowed to 200px). Stats: 2-col or 4-col. Activity+clients: stacked vertically.</td><td>Top nav visible (no bottom tabs). 2-col project grid.</td></tr>
+      <tr><td>Desktop (≥1024px)</td><td>Full sidebar 220px. Stats 4-col. Activity+clients 2:1 split. Full kanban view.</td><td>Full top nav. 2-3 col project grid depending on count.</td></tr>
+    </table>
+
+    <h3 style="font-size:14px;font-weight:700;margin:20px 0 12px;">Touch Targets</h3>
+    <p style="font-size:13px;color:var(--gray);margin-bottom:12px;">All interactive elements must be minimum 44×44px touch target on mobile. This includes:</p>
+    <ul style="font-size:13px;padding-left:20px;color:var(--gray);">
+      <li style="margin-bottom:6px;">Nav items in the portal bottom bar — use py-3 + px-4 minimum</li>
+      <li style="margin-bottom:6px;">Document download buttons — full-width on mobile</li>
+      <li style="margin-bottom:6px;">Client list rows — make entire row tappable, not just the text</li>
+      <li style="margin-bottom:6px;">Color swatches in onboarding — minimum 40×40px</li>
+    </ul>
+  </div>
+
+  <!-- ===== 13. GAPS / MISSING SCREENS ===== -->
+  <div class="section" id="gaps">
+    <div class="section-title">13. Missing Screens / Gaps</div>
+    <div class="section-sub">These screens are linked but not built. Prioritized by user impact.</div>
+
+    <table>
+      <tr><th>Priority</th><th>Screen / Feature</th><th>Why Needed</th><th>Complexity</th></tr>
+      <tr>
+        <td><span class="flag fix">P0</span></td>
+        <td>/clients/[id] — Client Detail</td>
+        <td>Dashboard links to client detail pages (/clients/1 etc). Currently 404. Linked from multiple places. Blocks core workflow.</td>
+        <td>Medium — needs: client header, project list, document list, activity log for this client, message thread link</td>
+      </tr>
+      <tr>
+        <td><span class="flag fix">P0</span></td>
+        <td>Portal branded login screen</td>
+        <td>First impression when client clicks magic link. Currently unclear — should show firm branding, not generic login.</td>
+        <td>Low — reuse ClientPortalShell wrapper</td>
+      </tr>
+      <tr>
+        <td><span class="flag new">P1</span></td>
+        <td>Onboarding success screen</td>
+        <td>After step 4, user needs positive reinforcement and clear next steps. "Portal is live" moment.</td>
+        <td>Low — interstitial before /dashboard redirect</td>
+      </tr>
+      <tr>
+        <td><span class="flag new">P1</span></td>
+        <td>Empty states (all list pages)</td>
+        <td>New users see empty Clients, Projects, Documents pages. Without empty states they're confused about what to do next.</td>
+        <td>Low — one shared EmptyState component, used 4x</td>
+      </tr>
+      <tr>
+        <td><span class="flag new">P1</span></td>
+        <td>/activity — Full activity log</td>
+        <td>Dashboard links to "View all activity" → 404. This is the key engagement signal (when did client read proposal?)</td>
+        <td>Low — table of Activity records, same pattern as Documents</td>
+      </tr>
+      <tr>
+        <td><span class="flag new">P2</span></td>
+        <td>/projects/[id] — Project Detail</td>
+        <td>Clicking a project card should go somewhere. Currently no project detail page — blocks the document upload flow within a project context.</td>
+        <td>Medium — tabs: Overview, Documents, Messages, Team</td>
+      </tr>
+      <tr>
+        <td><span class="flag new">P2</span></td>
+        <td>/terms and /privacy</td>
+        <td>Linked from signup footer — 404. Required for credibility and legal compliance.</td>
+        <td>Very low — static content pages</td>
+      </tr>
+      <tr>
+        <td><span class="flag new">P2</span></td>
+        <td>Notification panel</td>
+        <td>Mobile header has bell with badge count but tapping it does nothing. Needs slide-down panel.</td>
+        <td>Low — slide panel listing activity events</td>
+      </tr>
+    </table>
+
+    <div class="note">
+      <strong>Critical for coder:</strong> Focus P0 items first (client detail page + portal login). These complete the core loop: invite client → client logs in → firm sees activity → firm follows up. Without these, the app has holes in the core workflow.
+    </div>
+  </div>
+
+  <hr>
+  <div style="text-align:center;font-size:12px;color:var(--gray);padding:24px 0;">
+    ClientShell Design Spec · @designer · 2026-02-17 · Ready for @coder handoff
+  </div>
+
+</div>
+</body>
+</html>

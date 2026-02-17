@@ -51,8 +51,11 @@ export function ClientPortalShell({
 
   return (
     <div style={brandStyles} className="min-h-screen bg-slate-50 flex flex-col">
-      {/* Header */}
-      <header className="sticky top-0 z-50 bg-white border-b">
+      {/* Header with branded top accent */}
+      <header
+        className="sticky top-0 z-50 bg-white border-b"
+        style={{ borderTopWidth: "3px", borderTopColor: firm.primaryColor }}
+      >
         <div className="container mx-auto px-4 py-3 flex items-center justify-between">
           <Link href="/portal" className="flex items-center gap-3">
             {firm.logoUrl ? (

@@ -179,15 +179,17 @@ export default function DashboardPage() {
             <div className="w-10 h-10 rounded-lg bg-amber-100 flex items-center justify-center">
               <Eye className="w-5 h-5 text-amber-600" />
             </div>
-            <div className="flex items-center gap-2">
-              <p className="text-2xl font-bold">{mockStats.unseenDocs}</p>
-              {mockStats.unseenDocs > 0 && (
-                <Badge variant="secondary" className="text-xs">
-                  New
-                </Badge>
-              )}
+            <div>
+              <div className="flex items-center gap-2">
+                <p className="text-2xl font-bold">{mockStats.unseenDocs}</p>
+                {mockStats.unseenDocs > 0 && (
+                  <Badge variant="secondary" className="text-xs">
+                    New
+                  </Badge>
+                )}
+              </div>
+              <p className="text-sm text-muted-foreground">Docs Viewed</p>
             </div>
-            <p className="text-sm text-muted-foreground">Unseen</p>
           </div>
         </Card>
       </div>
