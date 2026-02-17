@@ -5,7 +5,7 @@ nixPkgs = ['nodejs_23', 'nodePackages.pnpm']
 cmds = ['pnpm i --frozen-lockfile']
 
 [phases.build]
-cmds = ['pnpm build']
+cmds = ['pnpm exec prisma generate', 'pnpm build']
 
 [start]
 cmd = 'pnpm start'
