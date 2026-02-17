@@ -1,375 +1,356 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
-  Shield,
-  Clock,
-  Eye,
-  Users,
-  FileText,
   ArrowRight,
   Check,
-  Building2,
-  Briefcase,
-  Scale,
-  Megaphone,
-  Calculator,
+  Sparkles,
+  Lock,
+  Eye,
+  Zap,
+  Users,
+  FileText,
 } from "lucide-react";
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white">
+    <div className="min-h-screen bg-[#0C0C0C] text-white overflow-hidden">
+      {/* Grain overlay */}
+      <div className="fixed inset-0 opacity-[0.015] pointer-events-none z-50">
+        <svg className="w-full h-full">
+          <filter id="noise">
+            <feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="4" stitchTiles="stitch"/>
+          </filter>
+          <rect width="100%" height="100%" filter="url(#noise)"/>
+        </svg>
+      </div>
+
       {/* Header */}
-      <header className="border-b bg-white/80 backdrop-blur-sm sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-[#1E3A5F] rounded-lg flex items-center justify-center">
-              <Building2 className="w-5 h-5 text-white" />
+      <header className="fixed top-0 w-full z-40 bg-[#0C0C0C]/80 backdrop-blur-xl border-b border-white/5">
+        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 bg-gradient-to-br from-amber-400 to-orange-500 rounded-lg flex items-center justify-center">
+              <Sparkles className="w-5 h-5 text-black" />
             </div>
-            <span className="font-bold text-xl">ClientShell</span>
+            <span className="font-semibold text-lg tracking-tight">ClientShell</span>
           </div>
-          <nav className="hidden md:flex items-center gap-6">
-            <Link href="#features" className="text-sm text-muted-foreground hover:text-foreground transition">
+          <nav className="hidden md:flex items-center gap-8">
+            <Link href="#features" className="text-sm text-white/60 hover:text-white transition">
               Features
             </Link>
-            <Link href="#pricing" className="text-sm text-muted-foreground hover:text-foreground transition">
+            <Link href="#pricing" className="text-sm text-white/60 hover:text-white transition">
               Pricing
             </Link>
-            <Link href="/login" className="text-sm text-muted-foreground hover:text-foreground transition">
+            <Link href="/login" className="text-sm text-white/60 hover:text-white transition">
               Login
             </Link>
           </nav>
           <Link href="/signup">
-            <Button>Start Free Trial</Button>
+            <Button className="bg-white text-black hover:bg-white/90 font-medium">
+              Start Free
+            </Button>
           </Link>
         </div>
       </header>
 
       {/* Hero */}
-      <section className="container mx-auto px-4 py-20 md:py-32">
-        <div className="max-w-3xl mx-auto text-center">
-          <Badge variant="secondary" className="mb-4">
-            Setup in under 30 minutes
+      <section className="relative pt-32 pb-20 px-6">
+        {/* Gradient orbs */}
+        <div className="absolute top-20 left-1/4 w-96 h-96 bg-amber-500/20 rounded-full blur-[128px]" />
+        <div className="absolute top-40 right-1/4 w-80 h-80 bg-orange-500/10 rounded-full blur-[100px]" />
+        
+        <div className="max-w-4xl mx-auto text-center relative">
+          <Badge className="mb-6 bg-white/5 border-white/10 text-amber-400 hover:bg-white/10">
+            <Zap className="w-3 h-3 mr-1" /> Setup in 30 minutes
           </Badge>
-          <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-6">
-            Look enterprise in{" "}
-            <span className="text-[#1E3A5F]">under 30 minutes</span>
+          
+          <h1 className="text-5xl md:text-7xl font-bold tracking-tight leading-[1.1] mb-6">
+            Your 10-person firm.
+            <br />
+            <span className="bg-gradient-to-r from-amber-400 via-orange-400 to-amber-500 bg-clip-text text-transparent">
+              100-person presence.
+            </span>
           </h1>
-          <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-            Your clients deserve a portal, not a Google Drive link. White-label
-            client communication that makes your 10-person firm look like a 100-person operation.
+          
+          <p className="text-xl md:text-2xl text-white/50 max-w-2xl mx-auto mb-10 leading-relaxed">
+            Stop sending clients Google Drive links. Give them a branded portal 
+            that makes you look like you have a whole IT department.
           </p>
+          
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link href="/signup">
-              <Button size="lg" className="w-full sm:w-auto gap-2">
-                Start Free Trial <ArrowRight className="w-4 h-4" />
+              <Button size="lg" className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-black font-semibold px-8 h-14 text-lg">
+                Start Free Trial <ArrowRight className="ml-2 w-5 h-5" />
               </Button>
             </Link>
             <Link href="#demo">
-              <Button size="lg" variant="outline" className="w-full sm:w-auto">
-                Watch Demo
+              <Button size="lg" variant="outline" className="border-white/20 text-white hover:bg-white/5 h-14 px-8 text-lg">
+                See it in action
               </Button>
             </Link>
           </div>
         </div>
 
-        {/* Browser Mockup */}
-        <div className="mt-16 max-w-4xl mx-auto">
-          <div className="border rounded-xl shadow-2xl overflow-hidden bg-white">
-            <div className="bg-slate-100 px-4 py-3 flex items-center gap-2 border-b">
-              <div className="flex gap-1.5">
-                <div className="w-3 h-3 rounded-full bg-red-400" />
-                <div className="w-3 h-3 rounded-full bg-yellow-400" />
-                <div className="w-3 h-3 rounded-full bg-green-400" />
+        {/* Portal Preview */}
+        <div className="mt-20 max-w-5xl mx-auto relative">
+          <div className="absolute inset-0 bg-gradient-to-t from-[#0C0C0C] via-transparent to-transparent z-10 pointer-events-none" />
+          
+          <div className="rounded-2xl border border-white/10 bg-[#111111] overflow-hidden shadow-2xl shadow-black/50">
+            {/* Browser chrome */}
+            <div className="bg-[#1A1A1A] px-4 py-3 flex items-center gap-3 border-b border-white/5">
+              <div className="flex gap-2">
+                <div className="w-3 h-3 rounded-full bg-white/20" />
+                <div className="w-3 h-3 rounded-full bg-white/20" />
+                <div className="w-3 h-3 rounded-full bg-white/20" />
               </div>
               <div className="flex-1 flex justify-center">
-                <div className="bg-white rounded-md px-4 py-1 text-sm text-muted-foreground font-mono border">
-                  portal.smithcpa.com
+                <div className="bg-[#0C0C0C] rounded-lg px-4 py-1.5 text-sm text-white/40 font-mono">
+                  portal.acmeconsulting.com
                 </div>
               </div>
             </div>
-            <div className="p-8 bg-gradient-to-br from-slate-50 to-slate-100">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="w-10 h-10 bg-[#1E3A5F] rounded-lg" />
-                <span className="font-semibold text-lg">Smith & Associates</span>
+            
+            {/* Portal content */}
+            <div className="p-8 bg-gradient-to-br from-[#0F0F0F] to-[#141414]">
+              <div className="flex items-center justify-between mb-8">
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 bg-gradient-to-br from-emerald-400 to-teal-500 rounded-xl" />
+                  <div>
+                    <h3 className="font-semibold text-white">ACME Consulting</h3>
+                    <p className="text-sm text-white/40">Welcome back, Sarah</p>
+                  </div>
+                </div>
+                <Badge className="bg-emerald-500/10 text-emerald-400 border-emerald-500/20">
+                  3 updates
+                </Badge>
               </div>
-              <p className="text-muted-foreground mb-4">Welcome back, Sarah</p>
+              
               <div className="grid md:grid-cols-2 gap-4">
-                <Card className="p-4">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="font-medium">Q4 Tax Filing</span>
-                    <Badge className="bg-blue-100 text-blue-700">In Progress</Badge>
+                <div className="bg-white/5 rounded-xl p-5 border border-white/5 hover:border-white/10 transition group">
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="font-medium text-white">Q4 Strategy Review</span>
+                    <span className="text-xs px-2 py-1 rounded-full bg-amber-500/10 text-amber-400">In Review</span>
                   </div>
-                  <p className="text-sm text-muted-foreground">3 documents · 1 unread</p>
-                </Card>
-                <Card className="p-4">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="font-medium">2024 Audit Prep</span>
-                    <Badge variant="outline">Not Started</Badge>
+                  <p className="text-sm text-white/40 mb-3">Final recommendations deck</p>
+                  <div className="flex items-center gap-2 text-xs text-white/30">
+                    <FileText className="w-3.5 h-3.5" />
+                    <span>3 documents</span>
+                    <span className="text-amber-400">• 1 unread</span>
                   </div>
-                  <p className="text-sm text-muted-foreground">1 document</p>
-                </Card>
+                </div>
+                
+                <div className="bg-white/5 rounded-xl p-5 border border-white/5 hover:border-white/10 transition group">
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="font-medium text-white">2025 Roadmap</span>
+                    <span className="text-xs px-2 py-1 rounded-full bg-white/10 text-white/60">Draft</span>
+                  </div>
+                  <p className="text-sm text-white/40 mb-3">Initial planning phase</p>
+                  <div className="flex items-center gap-2 text-xs text-white/30">
+                    <FileText className="w-3.5 h-3.5" />
+                    <span>1 document</span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Trust badges */}
-        <div className="mt-12 flex flex-wrap items-center justify-center gap-8 text-muted-foreground">
+        {/* Social proof */}
+        <div className="mt-16 flex flex-wrap items-center justify-center gap-x-10 gap-y-4 text-white/40 text-sm">
           <div className="flex items-center gap-2">
-            <Check className="w-5 h-5 text-green-600" />
-            <span>Setup in &lt;30 min</span>
+            <Check className="w-4 h-4 text-emerald-400" />
+            <span>No credit card required</span>
           </div>
           <div className="flex items-center gap-2">
-            <Check className="w-5 h-5 text-green-600" />
-            <span>Custom subdomain</span>
+            <Check className="w-4 h-4 text-emerald-400" />
+            <span>Your domain, your brand</span>
           </div>
           <div className="flex items-center gap-2">
-            <Check className="w-5 h-5 text-green-600" />
-            <span>Your logo + colors</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <Check className="w-5 h-5 text-green-600" />
-            <span>No coding required</span>
+            <Check className="w-4 h-4 text-emerald-400" />
+            <span>Setup wizard included</span>
           </div>
         </div>
       </section>
 
       {/* Features */}
-      <section id="features" className="py-20 bg-slate-50">
-        <div className="container mx-auto px-4">
+      <section id="features" className="py-24 px-6 relative">
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-amber-500/5 to-transparent" />
+        
+        <div className="max-w-5xl mx-auto relative">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              Everything you need to look professional
+            <p className="text-amber-400 font-medium mb-4 tracking-wide uppercase text-sm">Why ClientShell</p>
+            <h2 className="text-4xl md:text-5xl font-bold tracking-tight">
+              Everything your firm needs
+              <br />
+              <span className="text-white/40">to look world-class</span>
             </h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto">
-              Stop losing deals because your document handoff looks homemade.
-            </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
-            <Card className="p-6">
-              <Shield className="w-10 h-10 text-[#1E3A5F] mb-4" />
-              <h3 className="font-semibold text-lg mb-2">White-Label Branding</h3>
-              <p className="text-muted-foreground text-sm">
-                Your logo, your colors, your subdomain. Clients never see &quot;ClientShell&quot; anywhere.
-              </p>
-            </Card>
-
-            <Card className="p-6">
-              <Clock className="w-10 h-10 text-[#1E3A5F] mb-4" />
-              <h3 className="font-semibold text-lg mb-2">30-Minute Setup</h3>
-              <p className="text-muted-foreground text-sm">
-                Step-by-step branding wizard. Upload logo, pick colors, choose template. Done.
-              </p>
-            </Card>
-
-            <Card className="p-6">
-              <Eye className="w-10 h-10 text-[#1E3A5F] mb-4" />
-              <h3 className="font-semibold text-lg mb-2">Activity Tracking</h3>
-              <p className="text-muted-foreground text-sm">
-                Know when your client reads your proposal. Close deals faster with engagement insights.
-              </p>
-            </Card>
-
-            <Card className="p-6">
-              <FileText className="w-10 h-10 text-[#1E3A5F] mb-4" />
-              <h3 className="font-semibold text-lg mb-2">Secure Documents</h3>
-              <p className="text-muted-foreground text-sm">
-                Upload PDFs, set expiry dates, track downloads. Built for compliance-conscious firms.
-              </p>
-            </Card>
-
-            <Card className="p-6">
-              <Users className="w-10 h-10 text-[#1E3A5F] mb-4" />
-              <h3 className="font-semibold text-lg mb-2">Client Invites</h3>
-              <p className="text-muted-foreground text-sm">
-                One-click magic link invites. No awkward &quot;create an account&quot; friction for clients.
-              </p>
-            </Card>
-
-            <Card className="p-6">
-              <Briefcase className="w-10 h-10 text-[#1E3A5F] mb-4" />
-              <h3 className="font-semibold text-lg mb-2">Project Tracking</h3>
-              <p className="text-muted-foreground text-sm">
-                Kanban-style project status. Clients always know where things stand.
-              </p>
-            </Card>
-          </div>
-        </div>
-      </section>
-
-      {/* Verticals */}
-      <section className="py-20">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              Built for your industry
-            </h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto">
-              Pre-configured templates with industry-specific terminology and workflows.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-4 max-w-4xl mx-auto">
+          <div className="grid md:grid-cols-2 gap-6">
             {[
-              { icon: Shield, label: "Security", term: "Engagements" },
-              { icon: Calculator, label: "Accounting", term: "Projects" },
-              { icon: Scale, label: "Legal", term: "Matters" },
-              { icon: Megaphone, label: "Marketing", term: "Campaigns" },
-              { icon: Briefcase, label: "Consulting", term: "Projects" },
-            ].map(({ icon: Icon, label, term }) => (
-              <Card key={label} className="p-4 text-center hover:shadow-md transition cursor-pointer">
-                <Icon className="w-8 h-8 mx-auto mb-2 text-[#1E3A5F]" />
-                <p className="font-medium">{label}</p>
-                <p className="text-xs text-muted-foreground">{term}</p>
-              </Card>
+              {
+                icon: Sparkles,
+                title: "White-Label Everything",
+                desc: "Your logo. Your colors. Your subdomain. Clients never see 'ClientShell' anywhere — it's YOUR portal.",
+                accent: "from-amber-400 to-orange-500"
+              },
+              {
+                icon: Zap,
+                title: "30-Minute Setup",
+                desc: "Our wizard walks you through branding, domain setup, and your first project. Most firms are live before lunch.",
+                accent: "from-emerald-400 to-teal-500"
+              },
+              {
+                icon: Eye,
+                title: "Know When They Read It",
+                desc: "Real-time activity tracking. See exactly when Sarah opened your proposal — and follow up at the perfect moment.",
+                accent: "from-blue-400 to-indigo-500"
+              },
+              {
+                icon: Lock,
+                title: "Enterprise-Grade Security",
+                desc: "Document expiry, download tracking, magic link auth. Built for compliance-conscious firms.",
+                accent: "from-rose-400 to-pink-500"
+              },
+              {
+                icon: Users,
+                title: "Frictionless Client Access",
+                desc: "One-click magic links. No 'create an account' awkwardness. Your clients just... get in.",
+                accent: "from-violet-400 to-purple-500"
+              },
+              {
+                icon: FileText,
+                title: "Project Clarity",
+                desc: "Kanban-style status boards. Your clients always know exactly where their project stands.",
+                accent: "from-cyan-400 to-sky-500"
+              },
+            ].map(({ icon: Icon, title, desc, accent }) => (
+              <div 
+                key={title}
+                className="group p-6 rounded-2xl bg-white/[0.02] border border-white/5 hover:border-white/10 hover:bg-white/[0.04] transition-all duration-300"
+              >
+                <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${accent} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}>
+                  <Icon className="w-6 h-6 text-black" />
+                </div>
+                <h3 className="text-xl font-semibold mb-2 text-white">{title}</h3>
+                <p className="text-white/50 leading-relaxed">{desc}</p>
+              </div>
             ))}
           </div>
         </div>
       </section>
 
       {/* Pricing */}
-      <section id="pricing" className="py-20 bg-slate-50">
-        <div className="container mx-auto px-4">
+      <section id="pricing" className="py-24 px-6">
+        <div className="max-w-5xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              Simple, transparent pricing
+            <p className="text-amber-400 font-medium mb-4 tracking-wide uppercase text-sm">Pricing</p>
+            <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-4">
+              Start free. Scale when ready.
             </h2>
-            <p className="text-muted-foreground">
-              Start free, upgrade when you&apos;re ready.
-            </p>
+            <p className="text-white/40 text-lg">14-day trial. No credit card. Cancel anytime.</p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
-            <Card className="p-6">
-              <div className="mb-4">
-                <h3 className="font-bold text-lg">Starter</h3>
-                <div className="text-3xl font-bold mt-2">
-                  $49<span className="text-base font-normal text-muted-foreground">/mo</span>
-                </div>
+          <div className="grid md:grid-cols-3 gap-6">
+            {/* Starter */}
+            <div className="p-8 rounded-2xl bg-white/[0.02] border border-white/5">
+              <h3 className="font-semibold text-lg mb-1">Starter</h3>
+              <div className="text-4xl font-bold mb-6">
+                $49<span className="text-lg font-normal text-white/40">/mo</span>
               </div>
-              <ul className="space-y-2 mb-6 text-sm">
-                <li className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-green-600" /> Up to 10 clients
-                </li>
-                <li className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-green-600" /> 1 firm user
-                </li>
-                <li className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-green-600" /> Custom subdomain
-                </li>
-                <li className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-green-600" /> Document sharing
-                </li>
+              <ul className="space-y-3 mb-8 text-white/60">
+                {["10 clients", "1 team member", "Custom subdomain", "Document sharing", "Email support"].map(item => (
+                  <li key={item} className="flex items-center gap-3">
+                    <Check className="w-4 h-4 text-emerald-400 shrink-0" />
+                    <span>{item}</span>
+                  </li>
+                ))}
               </ul>
-              <Button variant="outline" className="w-full">
-                Get Started
+              <Button variant="outline" className="w-full border-white/10 text-white hover:bg-white/5">
+                Start Trial
               </Button>
-            </Card>
+            </div>
 
-            <Card className="p-6 border-[#1E3A5F] border-2 relative">
-              <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#1E3A5F]">
-                Most Popular
-              </Badge>
-              <div className="mb-4">
-                <h3 className="font-bold text-lg">Pro</h3>
-                <div className="text-3xl font-bold mt-2">
-                  $99<span className="text-base font-normal text-muted-foreground">/mo</span>
-                </div>
+            {/* Pro */}
+            <div className="p-8 rounded-2xl bg-gradient-to-b from-amber-500/10 to-orange-500/5 border-2 border-amber-500/30 relative">
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                <Badge className="bg-gradient-to-r from-amber-500 to-orange-500 text-black font-medium border-0">
+                  Most Popular
+                </Badge>
               </div>
-              <ul className="space-y-2 mb-6 text-sm">
-                <li className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-green-600" /> Up to 50 clients
-                </li>
-                <li className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-green-600" /> 5 firm users
-                </li>
-                <li className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-green-600" /> Custom domain
-                </li>
-                <li className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-green-600" /> Activity tracking
-                </li>
-                <li className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-green-600" /> Priority support
-                </li>
-              </ul>
-              <Button className="w-full">Get Started</Button>
-            </Card>
-
-            <Card className="p-6">
-              <div className="mb-4">
-                <h3 className="font-bold text-lg">Agency</h3>
-                <div className="text-3xl font-bold mt-2">
-                  $199<span className="text-base font-normal text-muted-foreground">/mo</span>
-                </div>
+              <h3 className="font-semibold text-lg mb-1">Pro</h3>
+              <div className="text-4xl font-bold mb-6">
+                $99<span className="text-lg font-normal text-white/40">/mo</span>
               </div>
-              <ul className="space-y-2 mb-6 text-sm">
-                <li className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-green-600" /> Unlimited clients
-                </li>
-                <li className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-green-600" /> Unlimited users
-                </li>
-                <li className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-green-600" /> White-glove onboarding
-                </li>
-                <li className="flex items-center gap-2">
-                  <Check className="w-4 h-4 text-green-600" /> API access
-                </li>
+              <ul className="space-y-3 mb-8 text-white/60">
+                {["50 clients", "5 team members", "Custom domain", "Activity tracking", "Priority support", "Remove branding"].map(item => (
+                  <li key={item} className="flex items-center gap-3">
+                    <Check className="w-4 h-4 text-amber-400 shrink-0" />
+                    <span>{item}</span>
+                  </li>
+                ))}
               </ul>
-              <Button variant="outline" className="w-full">
-                Contact Sales
+              <Button className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-black font-semibold">
+                Start Trial
               </Button>
-            </Card>
+            </div>
+
+            {/* Agency */}
+            <div className="p-8 rounded-2xl bg-white/[0.02] border border-white/5">
+              <h3 className="font-semibold text-lg mb-1">Agency</h3>
+              <div className="text-4xl font-bold mb-6">
+                $199<span className="text-lg font-normal text-white/40">/mo</span>
+              </div>
+              <ul className="space-y-3 mb-8 text-white/60">
+                {["Unlimited clients", "Unlimited team", "White-glove setup", "API access", "Dedicated support"].map(item => (
+                  <li key={item} className="flex items-center gap-3">
+                    <Check className="w-4 h-4 text-emerald-400 shrink-0" />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+              <Button variant="outline" className="w-full border-white/10 text-white hover:bg-white/5">
+                Talk to Sales
+              </Button>
+            </div>
           </div>
         </div>
       </section>
 
       {/* CTA */}
-      <section className="py-20">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">
+      <section className="py-24 px-6 relative">
+        <div className="absolute inset-0 bg-gradient-to-t from-amber-500/10 via-transparent to-transparent" />
+        
+        <div className="max-w-3xl mx-auto text-center relative">
+          <h2 className="text-4xl md:text-5xl font-bold tracking-tight mb-6">
             Ready to look enterprise?
           </h2>
-          <p className="text-muted-foreground mb-8 max-w-xl mx-auto">
-            Start your 14-day free trial. No credit card required.
+          <p className="text-xl text-white/50 mb-10">
+            Join 500+ firms who stopped looking scrappy.
           </p>
           <Link href="/signup">
-            <Button size="lg" className="gap-2">
-              Start Free Trial <ArrowRight className="w-4 h-4" />
+            <Button size="lg" className="bg-white text-black hover:bg-white/90 font-semibold px-10 h-14 text-lg">
+              Start Your Free Trial <ArrowRight className="ml-2 w-5 h-5" />
             </Button>
           </Link>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="border-t py-12 bg-slate-50">
-        <div className="container mx-auto px-4">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-2">
-              <div className="w-6 h-6 bg-[#1E3A5F] rounded flex items-center justify-center">
-                <Building2 className="w-4 h-4 text-white" />
-              </div>
-              <span className="font-semibold">ClientShell</span>
+      <footer className="border-t border-white/5 py-12 px-6">
+        <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 bg-gradient-to-br from-amber-400 to-orange-500 rounded-lg flex items-center justify-center">
+              <Sparkles className="w-4 h-4 text-black" />
             </div>
-            <div className="flex items-center gap-6 text-sm text-muted-foreground">
-              <Link href="/privacy" className="hover:text-foreground transition">
-                Privacy
-              </Link>
-              <Link href="/terms" className="hover:text-foreground transition">
-                Terms
-              </Link>
-              <Link href="/contact" className="hover:text-foreground transition">
-                Contact
-              </Link>
-            </div>
-            <p className="text-sm text-muted-foreground">
-              © {new Date().getFullYear()} ClientShell
-            </p>
+            <span className="font-semibold">ClientShell</span>
           </div>
+          <div className="flex items-center gap-8 text-sm text-white/40">
+            <Link href="/privacy" className="hover:text-white transition">Privacy</Link>
+            <Link href="/terms" className="hover:text-white transition">Terms</Link>
+            <Link href="/contact" className="hover:text-white transition">Contact</Link>
+          </div>
+          <p className="text-sm text-white/30">© 2026 ClientShell</p>
         </div>
       </footer>
     </div>
